@@ -10,12 +10,12 @@ app.set('view engine', 'ejs');
 var test=0;
 app.get('/', function (req, res) {
   test++;
-  res.render('test.html');
+  res.render('frontend.html');
   //res.send(test+' Hello World!');
 });
 
 app.get('/admin', function (req, res) {
-  res.send('Admin!');
+  res.render('admin.html');
 });
 
 
