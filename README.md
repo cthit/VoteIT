@@ -39,12 +39,12 @@ A voting system for student Division Meeting (Sektionsmöte).
 * Vote counter: Check the log for suspicions activity eg more deployments
 * Vote counter: Destroy the server
 
-
-
 ##Development##
+
 ###Requirement###
 * Node
-* gulp
 * npm
+
 ###build###
 * gulp serve
+* gulp

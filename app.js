@@ -1,14 +1,13 @@
 var express = require('express');
 var app = express();
 
-var codes=[
-  [123,124,5,123,41235,123,123123],
-  [1,1,5,123,41235,1231,123123],
-  [3,124,5,123,41235,123,123123],
-  [5,124,5,123,41235,123,123123],
-  [6,124,5,123,41235,123123,123123],
-  [213,34,5,123,41235,123123,123123]
-];
+
+var conf={
+  users:20,
+  lengthOfCodes:32,
+  votes:20
+}
+var codes=[];
 
 //conf
 app.set('views', __dirname + '/views');
@@ -27,8 +26,25 @@ app.get('/admin', function (req, res) {
   res.render('admin.html');
 });
 app.get('/admin/print', function (req, res) {
-  res.render('print.html',{codes:codes});
+  res.render('print.html',{codes:generateCodes()});
 });
+
+var generateCodes=function(){
+  for(var i=0;i<conf.users;i++){
+    temp=[];
+    for(var j=0;j<conf.votes;j++){
+      temp.push(randomString(conf.lengthOfCodes, '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'));
+    }
+    codes.push(temp);
+    console.log(codes);
+  }
+  return codes;
+}
+function randomString(length, chars) {
+    var result = '';
+    for (var i = length; i > 0; --i) result += chars[Math.round(Math.random() * (chars.length - 1))];
+    return result;
+}
 
 
 var server = app.listen(3001, function () {
