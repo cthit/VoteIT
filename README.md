@@ -47,4 +47,4 @@ A voting system for student Division Meeting (Sektionsmöte).
 * gulp
 * npm
 ###build###
-* gulp build
+* gulp serve
