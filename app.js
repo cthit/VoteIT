@@ -13,12 +13,15 @@ var codes=[];
 app.set('views', __dirname + '/views');
 app.engine('html', require('ejs').renderFile);
 app.set('view engine', 'ejs');
-
+app.use(express.static('public'));
 
 var test=0;
+var elec=true;
+var option = ["Tuna berg", "Erik bark", "Ndushi johan"];
+
 app.get('/', function (req, res) {
   test++;
-  res.render('frontend.html');
+  res.render('frontend.html', {elec:elec,test:test,options:option});
   //res.send(test+' Hello World!');
 });
 

@@ -1,2 +1,16 @@
-<h1>FrontEnd</h1>
-Voting
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+<script src="/javascript.js"></script>
+<%if (!elec) { %>
+  <h1>No election at the time</h1>
+  There is no election at the time, try again later.
+<%}else { %>
+  <h1>Election open</h1>
+<form class="optionsform" >
+  <% options.forEach(function(options)  { %>
+    <label>
+      <input type="checkbox" name="Rösta" value="<%= options %>" class="voteoption"><%= options %>
+    </label>
+    <br>
+  <% }) %>
+  </form>
+<% } %>
