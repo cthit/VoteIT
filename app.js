@@ -56,7 +56,6 @@ app.post('/vote', function (req, res) {
 });
 app.post('/login', function (req, res) {
   console.log(req.body);
->>>>>>> 5efc25126aacbd1fbfb5b263926ac3fb5541dbd9
   //res.send(test+' Hello World!');
 });
 
