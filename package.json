@@ -1,0 +1,31 @@
+{
+  "name": "VoteIT",
+  "version": "0.0.0",
+  "description": "A voting system for student Division Meeting(Student möte).",
+  "main": "index.js",
+  "scripts": {
+    "test": ""
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cthit/VoteIT.git"
+  },
+  "keywords": [
+    "Voting",
+    "Chalmers"
+  ],
+  "author": "Erik Axelsson",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/cthit/VoteIT/issues"
+  },
+  "dependencies": {
+    "express": "^4.13.3",
+    "gulp": "^3.9.0",
+    "memory-store": "0.0.1"
+  },
+  "devDependencies": {
+    "gulp-livereload": "^3.8.1",
+    "gulp-nodemon": "^2.0.4"
+  }
+}
