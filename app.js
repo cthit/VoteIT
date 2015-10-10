@@ -64,9 +64,9 @@ app.post('/login', function (req, res) {
 app.get('/admin', function (req, res) {
   if(req.cookies.password!=conf.pass){
     res.redirect('/loginAdmin');
+  }else {
+    res.render('admin.html');
   }
-
-  res.render('admin.html');
 });
 app.get('/admin/print', function (req, res) {
   if(req.cookies.password!=conf.pass){
