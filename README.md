@@ -2,16 +2,17 @@
 A voting system for studenttradistion meeting(Student möte).
 -----------------------------
 ===Requitements===
-USB-> USB-minium
-Sax
-Tillgång till skrivare
-rösträknare != justerare
+* USB-> USB-minium
+* Sax
+* Tillgång till skrivare
+* rösträknare != justerare
 ===Requerements===
 * Anonymity
 * Security for man in the middle.
 * Security for mansession hijacking.
 
 ===Structure===
+
 ===Setup===
 * ALLA: Välj rösträknare med vanlig rösträkning
 * RÖSTRÄKNARE: Få inlogning av styrit.
