@@ -39,8 +39,9 @@ app.get('/loginAdmin', function (req, res) {
 });
 app.post('/loginAdmin', function (req, res) {
 
-  if(req.body.pass==conf.admin){
+  if(req.body.pass==conf.pass){
     res.cookie('password', req.body.pass, { maxAge: 900000, httpOnly: false});
+  //  res.send('OK');
     res.redirect('/admin');
   }else{
     res.send('FAIL');
@@ -62,14 +63,14 @@ app.post('/login', function (req, res) {
 
 
 app.get('/admin', function (req, res) {
-  if(req.cookies.password!=conf.admin){
+  if(req.cookies.password!=conf.pass){
     res.redirect('/loginAdmin');
   }
 
   res.render('admin.html');
 });
 app.get('/admin/print', function (req, res) {
-  if(req.cookies.password!=conf.admin){
+  if(req.cookies.password!=conf.pass){
     res.redirect('/loginAdmin');
   }
   res.render('print.html',{codes:generateCodes()});
