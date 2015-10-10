@@ -90,8 +90,9 @@ app.get('/admin', function (req, res) {
 app.get('/admin/print', function (req, res) {
   if(req.cookies.password!=conf.pass){
     res.redirect('/loginAdmin');
+  }else {
+    res.render('print.html',{codes:generateCodes()});
   }
-  res.render('print.html',{codes:generateCodes()});
 });
 
 var generateCodes=function(){
