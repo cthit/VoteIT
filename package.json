@@ -20,6 +20,7 @@
     "url": "https://github.com/cthit/VoteIT/issues"
   },
   "dependencies": {
+    "ejs": "^2.3.4",
     "express": "^4.13.3",
     "gulp": "^3.9.0",
     "memory-store": "0.0.1"

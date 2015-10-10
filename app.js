@@ -1,13 +1,17 @@
-
-
-
 var express = require('express');
 var app = express();
+
+//conf
+app.set('views', __dirname + '/views');
+app.engine('html', require('ejs').renderFile);
+app.set('view engine', 'ejs');
+
+
 var test=0;
 app.get('/', function (req, res) {
   test++;
-
-  res.send(test+' Hello World!');
+  res.render('test.html');
+  //res.send(test+' Hello World!');
 });
 
 app.get('/admin', function (req, res) {

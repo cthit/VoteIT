@@ -2,7 +2,7 @@ var gulp = require('gulp');
 var nodemon = require('gulp-nodemon');
 
 gulp.task('build', function() {
-  // place code for your default task here
+  // build on live server
 });
 
 gulp.task('serve', function (cb) {
