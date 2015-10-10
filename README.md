@@ -32,9 +32,19 @@ A voting system for student Division Meeting (Sektionsmöte).
 ###Voting###
 * Vote counter: When its time for election choose the right type and options
 * Vote counter: Pick a time limit, 15 min is recommended
-* ALL: Will see that there is an election 
+* ALL: Will see that there is an election
 * ALL: Choose the option(s) that you want and enter the one-time-use code for the election
 
 ###End###
 * Vote counter: Check the log for suspicions activity eg more deployments
 * Vote counter: Destroy the server
+
+
+
+##Development##
+###Requirement###
+* Node
+* gulp
+* npm
+###build###
+* gulp build
