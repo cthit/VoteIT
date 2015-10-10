@@ -1,5 +1,5 @@
 # VoteIT v2
-A voting system for studentdevision meeting(Student möte).
+A voting system for student Division Meeting(Student möte).
 -----------------------------
 ###Requitements###
 * USB-> USB-minium
