@@ -5,12 +5,16 @@
   There is no election at the time, try again later.
 <%}else { %>
   <h1>Election open</h1>
-<form class="optionsform" >
+<form class="optionsform" action="vote" method="post" >
   <% options.forEach(function(options)  { %>
     <label>
-      <input type="checkbox" name="Rösta" value="<%= options %>" class="voteoption"><%= options %>
+      <input type="checkbox" name="vote" value="<%= options %>" class="voteoption"><%= options %>
     </label>
     <br>
   <% }) %>
+  your code on your papper:<input name="code" />
+  <input type="submit" value="Submit">
+
+
   </form>
 <% } %>

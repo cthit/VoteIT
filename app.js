@@ -56,7 +56,7 @@ app.post('/loginAdmin', function (req, res) {
 
 app.post('/vote', function (req, res) {
   var correctVote=false;
-  for(var i=0;i<codes.length();i++){
+  for(var i=0;i<codes.length;i++){
     if(codes[i]==req.body.code){
       correctVote=true;
       break;
