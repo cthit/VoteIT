@@ -2,14 +2,19 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser')
 var app = express();
+var expressWs = require('express-ws')(app); //app = express app
 
 
 var wrongTries=0;
+var wrongAdminTries=0;
+var vote=1;
 var conf={
   pass:"admin",
   users:20,
   lengthOfCodes:32,
-  votes:20
+  votes:20,
+  maxWrongTries:10000,
+  maxWrongAdminTries:100
 }
 var codes=[];
 
@@ -34,7 +39,6 @@ app.get('/', function (req, res) {
 app.get('/loginAdmin', function (req, res) {
   console.log(req.cookies.password);
 
-
   res.render('loginAdmin.html');
 });
 app.post('/loginAdmin', function (req, res) {
@@ -51,9 +55,24 @@ app.post('/loginAdmin', function (req, res) {
 
 
 app.post('/vote', function (req, res) {
-  console.log(req.body);
-  //res.send(test+' Hello World!');
+  var correctVote=false;
+  for(var i=0;i<codes.length();i++){
+    if(codes[i]==req.body.code){
+      correctVote=true;
+      break;
+    }
+  }
+  if(correctVote){
+    //Add vote
+  }else{
+    wrongTries++;
+  }
 });
+
+
+
+
+
 app.post('/login', function (req, res) {
   console.log(req.body);
   //res.send(test+' Hello World!');
@@ -79,7 +98,7 @@ var generateCodes=function(){
   for(var i=0;i<conf.users;i++){
     temp=[];
     for(var j=0;j<conf.votes;j++){
-      temp.push(randomString(conf.lengthOfCodes, '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'));
+      temp.push(randomString(conf.lengthOfCodes, '23456789abcdefghjkmnpqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'));
     }
     codes.push(temp);
   }
@@ -91,8 +110,6 @@ function randomString(length, chars) {
     for (var i = length; i > 0; --i) result += chars[Math.round(Math.random() * (chars.length - 1))];
     return result;
 }
-
-
 //server start stuff.
 var server = app.listen(3001, function () {
   var host = server.address().address;

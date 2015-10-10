@@ -24,6 +24,7 @@
     "cookie-parser": "^1.4.0",
     "ejs": "^2.3.4",
     "express": "^4.13.3",
+    "express-ws": "^1.0.0-rc.2",
     "gulp": "^3.9.0",
     "gulp-babel": "^5.2.1",
     "memory-store": "0.0.1"
