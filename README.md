@@ -6,6 +6,7 @@ A voting system for student Division Meeting(Student möte).
 * Sax
 * Tillgång till skrivare
 * rösträknare != justerare
+
 ###Requerements###
 * Anonymity
 * Security for man in the middle.
@@ -27,11 +28,13 @@ A voting system for student Division Meeting(Student möte).
 * RÖSTRÄKNARE: skriv in hur många omröstningar det kommer att vara ~20
 * RÖSTRÄKNARE: Ta sladden av styrit gå till en skrivare skriv ut med hjälp av den använd print knappen.
 * RÖSTRÄKNARE: Dela pappret, Dela ut en pappers bit till varje persson.
+
 ###Voting###
 * RÖSTRÄKNARE: Vid val sätt up rätt typ av omröstning.
 * RÖSTRÄKNARE: Sätt tidgräns rekomenderas 15 min
 * ALLA: Kommer att kunna se att det fins en omröstning
 * ALLA: Tryck på vad ni röstar och skriv nummnret som är i hörnet.  
+
 ###End###
 * RÖSTRÄKNARE: Kolla loggen av deploys
 * RÖSTRÄKNARE: Destroya servern.
