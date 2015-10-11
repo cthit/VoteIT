@@ -4,7 +4,6 @@ var cookieParser = require('cookie-parser')
 var app = express();
 var expressWs = require('express-ws')(app); //app = express app
 
-
 var wrongTries=0;
 var wrongAdminTries=0;
 
@@ -12,8 +11,11 @@ var wrongAdminTries=0;
 var vote={
   id:1,
   timeLeft:100,//in sek
-  options:["Tuna berg", "Erik bark", "Ndushi johan"]
+  options:[{name:"Tuna berg",id:1},{name:"Erik bark",id:2},{name:"Ndushi johan",id:3}],
+  maximumnrOfVotes:2
 };
+
+var votesCount=[0,0,0];
 
 var conf={
   pass:"admin",
@@ -69,15 +71,21 @@ app.post('/createVoteSession', function (req, res) {
 app.post('/vote', function (req, res) {
   var correctVote=false;
   for(var i=0;i<codes.length;i++){
-    if(codes[i]==req.body.code){
+    console.log(codes[vote.id][i]);
+    if(codes[vote.id][i]==req.body.code){
       correctVote=true;
       break;
     }
   }
-  if(correctVote){
-    //Add vote
+  if(correctVote){//Add vote
+    //check if valid code
+    if(req.body.vote.length>vote.maximumnrOfVotes){
+      res.send('FAIL');
+    }
+
     res.send('okej');
   }else{
+    console.log(req.body);
     wrongTries++;
     res.send('FAIL');
   }
