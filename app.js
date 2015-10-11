@@ -7,7 +7,14 @@ var expressWs = require('express-ws')(app); //app = express app
 
 var wrongTries=0;
 var wrongAdminTries=0;
-var vote=1;
+
+
+var vote={
+  id:1,
+  timeLeft:100,//in sek
+  options:["Tuna berg", "Erik bark", "Ndushi johan"]
+};
+
 var conf={
   pass:"admin",
   users:20,
@@ -29,11 +36,10 @@ app.use(express.static('public'));
 
 var test=0;
 var elec=true;
-var option = ["Tuna berg", "Erik bark", "Ndushi johan"];
 
 app.get('/', function (req, res) {
   test++;
-  res.render('frontend.html', {elec:elec,test:test,options:option});
+  res.render('frontend.html', {elec:elec,test:test,vote:vote});
 });
 
 app.get('/loginAdmin', function (req, res) {
@@ -52,6 +58,10 @@ app.post('/loginAdmin', function (req, res) {
   }
 
 });
+app.post('/createVoteSession', function (req, res) {
+
+});
+
 
 
 app.post('/vote', function (req, res) {
@@ -68,9 +78,6 @@ app.post('/vote', function (req, res) {
     wrongTries++;
   }
 });
-
-
-
 
 
 app.post('/login', function (req, res) {
