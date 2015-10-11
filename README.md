@@ -32,7 +32,7 @@ A voting system for student Division Meeting (Sektionsmöte).
 * Vote counter: Count the number of people that are eligible to vote on the meeting and add a buffer for people that are late (eg 20)
 * Vote counter: Count the max number of hidden votes and add a buffer for good measure
 * Vote counter: Print out the one-time-use codes (But not through print.chalmers.se or chalmers.it)
-* Vote counter: Distribute the codes to the people in the meeting
+* Vote counter: Distribute the codes to the people in the meeting through a random measure eg all codes in a bowl and the voter picks one in the bowl.
 
 ###Voting###
 * Vote counter: When its time for election choose the right type and options

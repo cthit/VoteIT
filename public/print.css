@@ -1,0 +1,14 @@
+
+.print-wrapper {
+	display: flex;
+	flex-wrap: wrap;
+	font-family: monospace;
+}
+
+.print-wrapper table:nth-of-type(8n) {
+	page-break-after: always;
+}
+
+.code-table {
+
+}

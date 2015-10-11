@@ -18,10 +18,11 @@ var vote={
 var conf={
   pass:"admin",
   users:20,
-  lengthOfCodes:32,
-  votes:20,
+  lengthOfCodes:12,
+  nbr_of_codes_per_user:20,
   maxWrongTries:10000,
-  maxWrongAdminTries:100
+  maxWrongAdminTries:100,
+  base58:'123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz'
 }
 var codes = [];
 
@@ -106,15 +107,18 @@ app.get('/admin/print', function (req, res) {
 });
 
 var generateCodes=function(){
-  for(var i=0;i<conf.users;i++){
-    temp=[];
-    for(var j=0;j<conf.votes;j++){
-      temp.push(randomString(conf.lengthOfCodes, '23456789abcdefghjkmnpqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'));
+  codes = [];
+  for(var i=0; i < conf.users; i++){
+    one_user_codes=[];
+    for(var j=0; j < conf.nbr_of_codes_per_user; j++){
+      one_user_codes.push(randomString(conf.lengthOfCodes, conf.base58));
     }
-    codes.push(temp);
+    codes.push(one_user_codes);
   }
   return codes;
 }
+
+
 
 function randomString(length, chars) {
     var result = '';
