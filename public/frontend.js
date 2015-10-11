@@ -1,6 +1,6 @@
 var optionamount=0;
 
-$('#optionsLeftLabel').text('You have maximum of ' + optionamount + ' options left');
+//$('#optionsLeftLabel').text('You have maximum of ' + optionamount + ' options left');
 
 $(function() {
   $('.optionsform').on('change','.voteoption', function(event) {

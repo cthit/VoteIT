@@ -8,16 +8,14 @@ var wrongTries=0;
 var wrongAdminTries=0;
 
 
-var vote = {};
-
 var VoteSessionNumber=1;
 
-//var vote={
-//  id:1,
-//  timeLeft:100,//in sek
-//  options:[{name:"Tuna berg",id:1},{name:"Erik bark",id:2},{name:"Ndushi johan",id:3}],
-//  maximumnrOfVotes:2
-//};
+var vote={
+  id:1,
+  timeLeft:100,//in sek
+  options:[{name:"Tuna berg",id:1},{name:"Erik bark",id:2},{name:"Ndushi johan",id:3}],
+  maximumnrOfVotes:2
+};
 
 var votesCount=[0,0,0];
 
@@ -89,7 +87,7 @@ app.post('/createVoteSession', function (req, res) {
     id:VoteSessionNumber,
     timeLeft:req.body.maxtime,//in sek
     options:optionsarr,
-    maxselections:req.body.maxallowedoptions
+    maximumnrOfVotes:req.body.maxallowedoptions
   };
   VoteSessionNumber++;
   res.redirect('/admin');
