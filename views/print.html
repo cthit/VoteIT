@@ -1,13 +1,21 @@
 <link rel="stylesheet" type="text/css" href="/print.css">
 <div class="print-wrapper">
 	<% codes.forEach(function(user_codes, index) { %>
+	<% if(index > 0 && (index%8) == 0) { %>
+			<div class="whitespace-block"> This space is intentionally left blank </div>
+	<%	} %> 
 	<table class="code-table">
 		<% user_codes.forEach(function(code, index) { %>
 	    <tr>
-	    <td class='index'><%= index + 1 %></td>
-	    <td class='code'><%= code %></td>
+	    	<td class='index'><%= index + 1 %></td>
+	    	<td class='code'><%= code %></td>
 	    </tr>
 	    <% }); %>
 	</table>
+
 	<% }); %>
 </div>
+
+<script> 
+	window.print();
+</script>
