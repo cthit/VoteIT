@@ -1,13 +1,18 @@
 # VoteIT v2
 A voting system for student Division Meeting (Sektionsmöte).
 -----------------------------
-###Requirements###
+
+###Features###
+* Anonymous voting.
+* Allows set amount of options to be accepted (eg, allow 3 options out of 5 to be accepted). So if the amount of allowed options is 2 and the options are "Agda", "Haskell" and "Erlang" both "Agda" and "Haskell" could be chosen. (personinval där en kommitté har limiterat antal platser)
+
+###Physical requirements###
 * USB-> USB Type B
 * Scissor
 * Access to printer
 * Vote counter != adjustor (justerare)
 
-###Requirements###
+###Technical requirements of the project###
 * Anonymity
 * Security for man in the middle.
 * Security for session hijacking.
@@ -41,7 +46,7 @@ A voting system for student Division Meeting (Sektionsmöte).
 
 ##Development##
 
-###Requirement###
+###Software requirement###
 * Node
 * npm
 
