@@ -1,5 +1,6 @@
-
 var optionamount=0;
+
+$('#optionsLeftLabel').text('You have maximum of ' + optionamount + ' options left');
 
 $(function() {
   $('.optionsform').on('change','.voteoption', function(event) {
@@ -14,6 +15,8 @@ $(function() {
       $('.voteoption:not(:checked)').prop('disabled', false);
     }
   });
+
+
 });
 $(window).ready(function(){
   window.setInterval(countDown,1000);

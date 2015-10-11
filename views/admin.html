@@ -1,21 +1,8 @@
-<form action="addVote" method="post">
-  <label>Max Time(min): </label><input type='number' id='maxtime' placeholder="Write the max time for the vote in minutes" > <br>
-  <label>Max allowed options for end user: </label><input type='number' id='Maxallowedoptions' placeholder="Write the max allowed options.." > <br>
-  <div id='TextBoxesGroup'>
-	   <div id="TextBoxDiv1">
-		     <label>Option #1 : </label><input type='textbox' id='textbox1' placeholder="Write an option.." > <br>
-         <label>Option #2 : </label><input type='textbox' id='textbox2' placeholder="Write an option.." >
-	      </div>
-  </div>
-<input type='button' value='+' id='addButton'>
-<input type='button' value='-' id='removeButton'>
-<br>
-
-  <input type='submit' value='Submit Vote' id='removeButton'>
-</form>
-<br>
 <a href="/admin/print" target="_new">
   <input type="button" value='Print one-time-use code' id='printbutton'>
 </a>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
-<script src="/admin.js"></script>
+<br>
+<a href="/createVoteSession">
+  <input type="button" value='Create a new Voting Session' id='printbutton'>
+</a>
+<a href="/admin/print">

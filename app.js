@@ -8,12 +8,16 @@ var wrongTries=0;
 var wrongAdminTries=0;
 
 
-var vote={
-  id:1,
-  timeLeft:100,//in sek
-  options:[{name:"Tuna berg",id:1},{name:"Erik bark",id:2},{name:"Ndushi johan",id:3}],
-  maximumnrOfVotes:2
-};
+var vote = {};
+
+var VoteSessionNumber=1;
+
+//var vote={
+//  id:1,
+//  timeLeft:100,//in sek
+//  options:[{name:"Tuna berg",id:1},{name:"Erik bark",id:2},{name:"Ndushi johan",id:3}],
+//  maximumnrOfVotes:2
+//};
 
 var votesCount=[0,0,0];
 
@@ -62,11 +66,34 @@ app.post('/loginAdmin', function (req, res) {
   }
 
 });
-app.post('/createVoteSession', function (req, res) {
 
+app.get('/createVoteSession', function (req, res) {
+  console.log(req.cookies.password);
+
+  res.render('createVoteSession.html');
 });
 
-
+app.post('/createVoteSession', function (req, res) {
+  console.log(req.cookies.password);
+  var temp = 1;
+  var optionsarr = [];
+  while (true) {
+    if(req.body["textbox"+temp] !== undefined){
+      optionsarr.push({name:req.body["textbox"+temp],id:temp});
+      temp++;
+    } else {
+      break;
+    }
+  }
+  vote={
+    id:VoteSessionNumber,
+    timeLeft:req.body.maxtime,//in sek
+    options:optionsarr,
+    maxselections:req.body.maxallowedoptions
+  };
+  VoteSessionNumber++;
+  res.redirect('/admin');
+});
 
 app.post('/vote', function (req, res) {
   var correctVote=false;

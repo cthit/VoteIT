@@ -8,13 +8,11 @@ $( document ).ready(function() {
       .attr("id", 'TextBoxDiv' + counter);
 
       newTextBoxDiv.after().html('<label>Option #'+ (counter+1)+ ' : </label>' +
-        '<input type="text" name="textbox' + counter +
-          '" id="textbox' + counter + '" value="" placeholder="Write an option.." >');
+        '<input type="text" name="textbox' + (counter+1) +
+          '" id="textbox' + (counter+1) + '" value="" placeholder="Write an option.." >');
 
           newTextBoxDiv.appendTo("#TextBoxesGroup");
 
-
-          console.log(counter);
     });
 
    $("#removeButton").click(function () {
@@ -23,10 +21,7 @@ $( document ).ready(function() {
         return false;
      }
 
-
-     console.log("första"+counter);
     $("#TextBoxDiv" + counter).remove();
       counter--;
-      console.log("andra"+counter);
     });
 });
