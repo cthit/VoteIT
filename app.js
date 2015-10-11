@@ -1,9 +1,9 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser')
+var Random = require("random-js")(); // uses the nativeMath engine
 var app = express();
 var expressWs = require('express-ws')(app); //app = express app
-
 var wrongTries=0;
 var wrongAdminTries=0;
 
@@ -155,7 +155,9 @@ var generateCodes=function(){
 
 function randomString(length, chars) {
     var result = '';
-    for (var i = length; i > 0; --i) result += chars[Math.round(Math.random() * (chars.length - 1))];
+    for (var i = length; i > 0; --i){
+      result += chars[Random.integer(0, chars.length - 1)];
+    }
     return result;
 }
 //server start stuff.
