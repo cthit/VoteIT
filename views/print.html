@@ -1,3 +1,13 @@
-<% codes.forEach(function(code) { %>
-    <li><%= code %> </li>
-<% }); %>
+<link rel="stylesheet" type="text/css" href="/print.css">
+<div class="print-wrapper">
+	<% codes.forEach(function(user_codes, index) { %>
+	<table class="code-table">
+		<% user_codes.forEach(function(code, index) { %>
+	    <tr>
+	    <td class='index'><%= index + 1 %></td>
+	    <td class='code'><%= code %></td>
+	    </tr>
+	    <% }); %>
+	</table>
+	<% }); %>
+</div>
