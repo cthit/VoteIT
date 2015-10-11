@@ -105,14 +105,29 @@ app.post('/vote', function (req, res) {
   if(correctVote){//Add vote
     //check if valid code
     if(req.body.vote.length>vote.maximumnrOfVotes){
-      res.send('FAIL');
-    }
+      res.send('FAIL to many votes');
+    }else{
+      var allExist=true;
+      for(var i=0;i<req.body.vote;i++){
+        if(votesCount[req.body.vote[i]]==undefined){
+          allExist=false;
 
-    res.send('okej');
+        }
+      }
+      if(allExist){//okey
+        //add votes
+        for(var i=0;i<req.body.vote;i++){
+          votesCount[req.body.vote[i]]++;
+        }
+        res.send('okej');
+      }else{
+          res.send('FAIL try to vote on a non existing thing');
+      }
+    }
   }else{
     console.log(req.body);
     wrongTries++;
-    res.send('FAIL');
+    res.send('FAIL wrong code');
   }
 });
 
