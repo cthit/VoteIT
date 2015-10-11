@@ -5,8 +5,11 @@
   There is no election at the time, try again later.
 <%}else { %>
   <h1>Election open</h1>
+ Vote nr:<%= vote.id %>
+ Time left:<%= vote.timeLeft %>
 <form class="optionsform" action="vote" method="post" >
-  <% options.forEach(function(options)  { %>
+
+  <% vote.options.forEach(function(options)  { %>
     <label>
       <input type="checkbox" name="vote" value="<%= options %>" class="voteoption"><%= options %>
     </label>
