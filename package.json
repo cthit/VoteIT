@@ -27,7 +27,8 @@
     "express-ws": "^1.0.0-rc.2",
     "gulp": "^3.9.0",
     "gulp-babel": "^5.2.1",
-    "memory-store": "0.0.1"
+    "memory-store": "0.0.1",
+    "random-js": "^1.0.6"
   },
   "devDependencies": {
     "gulp-livereload": "^3.8.1",
