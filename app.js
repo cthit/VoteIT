@@ -95,16 +95,12 @@ app.post('/createVoteSession', function (req, res) {
 
 app.post('/vote', function (req, res) {
   var correctVote=false;
-  console.log("code test");
-  console.log(req.body.code);
-  console.log(vote.id);
+  if(req.body.code==undefined){
+    res.send('FAIL undefined');
+  }
   for(var i=0;i<codes.length;i++){
-    console.log(codes[vote.id-1][i]);
-
-
-
     if(codes[vote.id][i]==req.body.code){
-
+      codes[vote.id][i]=undefined;
       correctVote=true;
       break;
     }
