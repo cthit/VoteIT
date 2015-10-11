@@ -45,7 +45,6 @@ var state="noVote";//vote|noVote|result
 
 app.get('/', function (req, res) {
   console.log(codes);
-  test++;
   res.render('frontend.html', {state:state,vote:vote});
 });
 
