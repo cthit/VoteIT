@@ -99,8 +99,9 @@ app.post('/vote', function (req, res) {
     res.send('FAIL undefined');
   }
   for(var i=0;i<codes.length;i++){
-    if(codes[vote.id][i]==req.body.code){
-      codes[vote.id][i]=undefined;
+
+
+    if(codes[i][vote.id-1]==req.body.code){
       correctVote=true;
       break;
     }
