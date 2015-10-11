@@ -99,11 +99,11 @@ app.post('/vote', function (req, res) {
   console.log(req.body.code);
   console.log(vote.id);
   for(var i=0;i<codes.length;i++){
-    console.log(codes[vote.id-1][i]);
+    console.log(codes[i][vote.id-1]);
 
 
 
-    if(codes[vote.id][i]==req.body.code){
+    if(codes[i][vote.id-1]==req.body.code){
 
       correctVote=true;
       break;

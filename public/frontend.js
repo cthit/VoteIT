@@ -1,17 +1,18 @@
 var optionamount=0;
 
-//$('#optionsLeftLabel').text('You have maximum of ' + optionamount + ' options left');
 
 $(function() {
   $('.optionsform').on('change','.voteoption', function(event) {
 
     if($(this).prop('checked')) {
       optionamount++;
+      $("#votesleft").html($("#maximumnrOfVotes").html()-optionamount);
       if (optionamount == $("#maximumnrOfVotes").html()) {
         $('.voteoption:not(:checked)').prop('disabled', true);
       }
     } else {
       optionamount--;
+      $("#votesleft").html($("#maximumnrOfVotes").html()-optionamount);
       $('.voteoption:not(:checked)').prop('disabled', false);
     }
   });
@@ -20,8 +21,9 @@ $(function() {
 });
 $(window).ready(function(){
   window.setInterval(countDown,1000);
+  $("#votesleft").html($("#maximumnrOfVotes").html());
   function countDown(){
-    console.log($("#timeleft").html());
+  //  console.log($("#timeleft").html());
     $("#timeleft").html($("#timeleft").html()-1);
     if($("#timeleft").html() == 0){
       location.reload();
