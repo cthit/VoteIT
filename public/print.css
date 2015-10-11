@@ -5,10 +5,21 @@
 	font-family: monospace;
 }
 
-.print-wrapper table:nth-of-type(8n) {
-	page-break-after: always;
+.print-wrapper table { 
+	page-break-inside:avoid; 
+	page-break-after:auto 
+}
+
+td.index {
+	padding-right: 1em;
+}
+
+.whitespace-block {
+	width: 100%;
+	margin: 5.2em;
 }
 
 .code-table {
-
+	border: 1px solid;
+	margin: 1em
 }
