@@ -95,9 +95,16 @@ app.post('/createVoteSession', function (req, res) {
 
 app.post('/vote', function (req, res) {
   var correctVote=false;
+  console.log("code test");
+  console.log(req.body.code);
+  console.log(vote.id);
   for(var i=0;i<codes.length;i++){
-    console.log(codes[vote.id][i]);
+    console.log(codes[vote.id-1][i]);
+
+
+
     if(codes[vote.id][i]==req.body.code){
+
       correctVote=true;
       break;
     }
