@@ -44,12 +44,11 @@ app.use(express.static('public'));
 var state="noVote";//vote|noVote|result
 
 app.get('/', function (req, res) {
-  console.log(codes);
+
   res.render('frontend.html', {state:state,vote:vote});
 });
 
 app.get('/loginAdmin', function (req, res) {
-  console.log(req.cookies.password);
 
   res.render('loginAdmin.html');
 });
@@ -66,14 +65,11 @@ app.post('/loginAdmin', function (req, res) {
 });
 
 app.get('/createVoteSession', function (req, res) {
-  console.log(req.cookies.password);
 
   res.render('createVoteSession.html');
 });
 
 app.post('/createVoteSession', function (req, res) {
-  console.log(req.cookies.password);
-
   state="vote";
 
   var temp = 1;
@@ -94,8 +90,7 @@ app.post('/createVoteSession', function (req, res) {
   };
   VoteSessionNumber++;
   res.redirect('/admin');
-  currentCountDown=window.setInterval(countDown,1000);
-
+  currentCountDown=setInterval(countDown,1000);
 });
 function countDown(){
   vote.timeLeft--;
@@ -148,7 +143,6 @@ app.post('/vote', function (req, res) {
       }
     }
   }else{
-    console.log(req.body);
     wrongTries++;
     res.send('FAIL wrong code');
   }
@@ -156,7 +150,6 @@ app.post('/vote', function (req, res) {
 
 
 app.post('/login', function (req, res) {
-  console.log(req.body);
   //res.send(test+' Hello World!');
 });
 
