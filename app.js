@@ -86,8 +86,10 @@ app.post('/createVoteSession', function (req, res) {
     id:VoteSessionNumber,
     timeLeft:req.body.maxtime,//in sek
     options:optionsarr,
-    maximumnrOfVotes:req.body.maxallowedoptions
+    maximumnrOfVotes:req.body.maxallowedoptions,
+    winners:[]
   };
+  votesCount=Array.apply(null, Array(optionsarr.length)).map(function (x, i) { return 0; });
   VoteSessionNumber++;
   res.redirect('/admin');
   currentCountDown=setInterval(countDown,1000);
@@ -96,11 +98,27 @@ function countDown(){
   vote.timeLeft--;
   if(vote.timeLeft==0){//resolve vote
 
-    for(var i=0;vote.maximumnrOfVotes<i;i++){
-      var aWinner=votesCount.indexOf(Math.max.apply(Math, votesCount));
-      votesCount[aWinner]=-1;
-      vote.winners.push(vote.option[aWinner]);
+    for(var i=0;i<vote.maximumnrOfVotes;i++){
+      console.log("votesCount");
+      console.log(votesCount);
+      var aWinner=votesCount.indexOf(Math.max.apply(Math, votesCount))+1;
+
+      votesCount[aWinner-1]=-1;
+      var findById=function(arr,id){
+        console.log("findById");
+        for (var i = 0; i < arr.length; i++) {
+            console.log(arr[i].id+" - "+id);
+          if(arr[i].id==id){
+            return arr[i];
+          }
+        }
+      }
+
+      vote.winners.push(findById(vote.options,aWinner));
+      console.log("winners");
+      console.log(vote.winners);
     }
+
 
     state="result";
     clearInterval(currentCountDown);
@@ -116,6 +134,7 @@ app.post('/vote', function (req, res) {
 
 
     if(codes[i][vote.id-1]==req.body.code){
+
       correctVote=true;
       break;
     }
@@ -126,17 +145,22 @@ app.post('/vote', function (req, res) {
       res.send('FAIL to many votes');
     }else{
       var allExist=true;
-      for(var i=0;i<req.body.vote;i++){
+      for(var i=0;i<req.body.vote.length;i++){
         if(votesCount[req.body.vote[i]]==undefined){
           allExist=false;
 
         }
       }
+
       if(allExist){//okey
         //add votes
-        for(var i=0;i<req.body.vote;i++){
-          votesCount[req.body.vote[i]]++;
+        for(var i=0;i<req.body.vote.length;i++){
+            console.log("add vote to"+req.body.vote[i]);
+          votesCount[req.body.vote[i]-1]++;
         }
+        console.log("votesCount");
+        console.log(req.body.vote);
+        console.log(votesCount);
         res.send('okej');
       }else{
           res.send('FAIL try to vote on a non existing thing');
