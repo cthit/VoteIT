@@ -6,6 +6,7 @@ var app = express();
 var expressWs = require('express-ws')(app); //app = express app
 var wrongTries=0;
 var wrongAdminTries=0;
+var currentCountDown;
 
 
 var VoteSessionNumber=1;
@@ -14,7 +15,8 @@ var vote={
   id:1,
   timeLeft:100,//in sek
   options:[{name:"Tuna berg",id:1},{name:"Erik bark",id:2},{name:"Ndushi johan",id:3}],
-  maximumnrOfVotes:2
+  maximumnrOfVotes:2,
+  winners:[]
 };
 
 var votesCount=[0,0,0];
@@ -39,13 +41,12 @@ app.engine('html', require('ejs').renderFile);
 app.set('view engine', 'ejs');
 app.use(express.static('public'));
 
-var test=0;
-var elec=true;
+var state="noVote";//vote|noVote|result
 
 app.get('/', function (req, res) {
   console.log(codes);
   test++;
-  res.render('frontend.html', {elec:elec,test:test,vote:vote});
+  res.render('frontend.html', {state:state,vote:vote});
 });
 
 app.get('/loginAdmin', function (req, res) {
@@ -73,6 +74,9 @@ app.get('/createVoteSession', function (req, res) {
 
 app.post('/createVoteSession', function (req, res) {
   console.log(req.cookies.password);
+
+  state="vote";
+
   var temp = 1;
   var optionsarr = [];
   while (true) {
@@ -91,7 +95,23 @@ app.post('/createVoteSession', function (req, res) {
   };
   VoteSessionNumber++;
   res.redirect('/admin');
+  currentCountDown=window.setInterval(countDown,1000);
+
 });
+function countDown(){
+  vote.timeLeft--;
+  if(vote.timeLeft==0){//resolve vote
+
+    for(var i=0;vote.maximumnrOfVotes<i;i++){
+      var aWinner=votesCount.indexOf(Math.max.apply(Math, votesCount));
+      votesCount[aWinner]=-1;
+      vote.winners.push(vote.option[aWinner]);
+    }
+
+    state="result";
+    clearInterval(currentCountDown);
+  }
+}
 
 app.post('/vote', function (req, res) {
   var correctVote=false;
@@ -170,8 +190,6 @@ var generateCodes=function(){
   return codes;
 }
 
-
-
 function randomString(length, chars) {
     var result = '';
     for (var i = length; i > 0; --i){
@@ -179,6 +197,7 @@ function randomString(length, chars) {
     }
     return result;
 }
+
 //server start stuff.
 var server = app.listen(3001, function () {
   var host = server.address().address;
