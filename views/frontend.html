@@ -6,7 +6,7 @@
 <%}else { %>
   <h1>Election open</h1>
  Vote nr:<%= vote.id %>
- Time left:<%= vote.timeLeft %>
+ Time left:<span id="timeleft"><%= vote.timeLeft %></span> in sek
 <form class="optionsform" action="vote" method="post" >
 
   <% vote.options.forEach(function(options)  { %>

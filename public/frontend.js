@@ -6,7 +6,7 @@ $(function() {
 
     if($(this).prop('checked')) {
       optionamount++;
-      if (optionamount == x) {
+      if (optionamount === x) {
         $('.voteoption:not(:checked)').prop('disabled', true);
       }
     } else {
@@ -15,6 +15,15 @@ $(function() {
     }
   });
 });
+//
+window.setInterval(countDown,1000);
+function countDown(){
+  console.log($("#timeleft").html());
+  $("#timeleft").html($("#timeleft").html()-1);
+  if($("#timeleft").html() == 0){
+    location.reload();
+  }
+}
 /*
 callWebSocket();
 function callWebSocket() {

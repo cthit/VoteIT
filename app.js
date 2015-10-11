@@ -23,7 +23,7 @@ var conf={
   maxWrongTries:10000,
   maxWrongAdminTries:100
 }
-var codes=[];
+var codes = [];
 
 //conf
 app.use(bodyParser.json()); // support json encoded bodies
@@ -38,6 +38,7 @@ var test=0;
 var elec=true;
 
 app.get('/', function (req, res) {
+  console.log(codes);
   test++;
   res.render('frontend.html', {elec:elec,test:test,vote:vote});
 });
@@ -74,8 +75,10 @@ app.post('/vote', function (req, res) {
   }
   if(correctVote){
     //Add vote
+    res.send('okej');
   }else{
     wrongTries++;
+    res.send('FAIL');
   }
 });
 
