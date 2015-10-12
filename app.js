@@ -9,6 +9,10 @@ var wrongAdminTries=0;
 var currentCountDown;
 
 
+app.set('port', (process.env.PORT || 5000));
+
+
+
 var VoteSessionNumber=1;
 
 var vote={
@@ -219,7 +223,7 @@ function randomString(length, chars) {
 }
 
 //server start stuff.
-var server = app.listen(3001, function () {
+var server = app.listen(app.get('port'), function () {
   var host = server.address().address;
   var port = server.address().port;
 
