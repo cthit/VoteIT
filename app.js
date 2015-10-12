@@ -14,7 +14,8 @@ var VoteSessionNumber=1;
 var vote={
   id:1,
   timeLeft:100,//in sek
-  options:[{name:"Tuna berg",id:1},{name:"Erik bark",id:2},{name:"Ndushi johan",id:3}],
+  options:[{name:"Tuna berg",id:0},{name:"Erik bark",id:1},{name:"Ndushi johan",id:2}],
+  vacoptions:[{name:"Vakant1",id:3,vac:true},{name:"Vakant2",id:4,vac:true}],
   maximumnrOfVotes:2,
   winners:[]
 };
@@ -44,7 +45,6 @@ app.use(express.static('public'));
 var state="noVote";//vote|noVote|result
 
 app.get('/', function (req, res) {
-
   res.render('frontend.html', {state:state,vote:vote});
 });
 
@@ -72,15 +72,19 @@ app.get('/createVoteSession', function (req, res) {
 app.post('/createVoteSession', function (req, res) {
   state="vote";
 
-  var temp = 1;
-  var optionsarr = [];
-  while (true) {
-    if(req.body["textbox"+temp] !== undefined){
-      optionsarr.push({name:req.body["textbox"+temp],id:temp});
-      temp++;
-    } else {
-      break;
-    }
+  var optionsarr = req.body.textbox.map(function(value, index) {
+    return {
+      id: index,
+      name: value,
+      vac: false
+    };
+  });
+  var vacoptions=[];
+  if(req.body.vakant=='on'){
+    for(var i=0;i<=req.body.maxallowedoptions; i++){
+      var index = optionsarr.length + i
+      vacoptions.push({id:index,name:"Vakant"+(i+1),vac:true});
+    };
   }
   vote={
     id:VoteSessionNumber,

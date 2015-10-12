@@ -4,26 +4,48 @@ var optionamount=0;
 
 
 $(function() {
+
+  $('.vacant').prop('disabled', true);
+  $('#vakant1').prop('disabled', false);
+  var maxVotes = $("#maximumnrOfVotes").val();
+
   $('.optionsform').on('change','.voteoption', function(event) {
 
     if($(this).prop('checked')) {
       optionamount++;
-      $("#votesleft").html($("#maximumnrOfVotes").html()-optionamount);
-      if (optionamount == $("#maximumnrOfVotes").html()) {
+      if (optionamount == maxVotes) {
         $('.voteoption:not(:checked)').prop('disabled', true);
       }
     } else {
       optionamount--;
-      $("#votesleft").html($("#maximumnrOfVotes").html()-optionamount);
-      $('.voteoption:not(:checked)').prop('disabled', false);
+      $('.voteoption:not(.vacant):not(:checked)').prop('disabled', false);
+      $('#vakant1').prop('disabled', false);
     }
+    $("#votesleft").html(maxVotes-optionamount);
   });
+  $('.optionsform').on('change','.vacant', function(event) {
+    var id = $(this).prop('id');
+    id = parseInt(id.replace('vakant',''));
+    var newId = '#vakant'+(id+1);
+
+    if($(this).prop('checked')) {
+      if (optionamount)
+      $(newId).prop('disabled', false);
+    } else {
+      if($(newId).prop('checked')){
+          optionamount--;
+          $(newId).prop('checked', false);
+          $(newId).prop('disabled', true);
+      }
+
+    }
+    $("#votesleft").html(maxVotes-optionamount);
+  })
 
 
-});
-$(window).ready(function(){
   window.setInterval(countDown,1000);
-  $("#votesleft").html($("#maximumnrOfVotes").html());
+  $("#votesleft").html(maxVotes);
+  //$('.voteoption:class(:vakant)').prop('disabled', true);
   function countDown(){
   //  console.log($("#timeleft").html());
     $("#timeleft").html($("#timeleft").html()-1);

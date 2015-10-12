@@ -8,7 +8,7 @@ $( document ).ready(function() {
       .attr("id", 'TextBoxDiv' + counter);
 
       newTextBoxDiv.after().html('<label>Option #'+ (counter+1)+ ' : </label>' +
-        '<input type="text" name="textbox' + (counter+1) +
+        '<input type="text" name="textbox[]'+
           '" id="textbox' + (counter+1) + '" value="" placeholder="Write an option.." >');
 
           newTextBoxDiv.appendTo("#TextBoxesGroup");
