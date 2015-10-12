@@ -21,12 +21,14 @@ A voting system for student Division Meeting (Sektionsmöte).
 
 ###Setup###
 * ALL: Elect _Vote counters_ with ordinary vote counting (Välj rösträknare med vanlig rösträkning)
-* Vote counter: Be assigned a heroku account by StyrIT.
-* Vote counter: Reset password
+* Vote counter: Fork VoteIT to seperate account
+* Vote counter: Create heroku account
 * Vote counter: Press the plus button in the top right corner
 * Vote counter: Create new app
 * Vote counter: Choose the name: Sektionsmote-{datum} eg Sektionsmote-2015-08-10
+* Vote counter: Link github account to heroku account
 * Vote counter: Create enviroment variable. KEY='your super secret password'.
+* Vote counter: Deploy the forked VoteIT
 * Vote counter: Go to the url + /admin
 * Vote counter: Log in with your super secret password.
 * Vote counter: Count the number of people that are eligible to vote on the meeting and add a buffer for people that are late (eg 20)
@@ -43,6 +45,7 @@ A voting system for student Division Meeting (Sektionsmöte).
 ###End###
 * Vote counter: Check the log for suspicions activity eg more deployments
 * Vote counter: Destroy the server
+* Vote counter: Destroy the forked VoteIT 
 
 ##Development##
 
