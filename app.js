@@ -49,6 +49,7 @@ app.use(express.static('public'));
 var state="noVote";//vote|noVote|result
 
 app.get('/', function (req, res) {
+  console.log(vote);
   res.render('frontend.html', {state:state,vote:vote});
 });
 
@@ -85,7 +86,7 @@ app.post('/createVoteSession', function (req, res) {
   });
   var vacoptions=[];
   if(req.body.vakant=='on'){
-    for(var i=0;i<=req.body.maxallowedoptions; i++){
+    for(var i=0;i<req.body.maxallowedoptions; i++){
       var index = optionsarr.length + i
       vacoptions.push({id:index,name:"Vakant"+(i+1),vac:true});
     };
@@ -94,6 +95,7 @@ app.post('/createVoteSession', function (req, res) {
     id:VoteSessionNumber,
     timeLeft:req.body.maxtime,//in sek
     options:optionsarr,
+    vacoptions:vacoptions,
     maximumnrOfVotes:req.body.maxallowedoptions,
     winners:[]
   };
