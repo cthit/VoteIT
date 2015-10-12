@@ -10,6 +10,7 @@ var currentCountDown;
 
 
 app.set('port', (process.env.PORT || 5000));
+app.set('password', (process.env.PASSWORD || 'admin'));
 
 
 
@@ -27,7 +28,7 @@ var vote={
 var votesCount=[0,0,0];
 
 var conf={
-  pass:"admin",
+  pass:app.get('password'),
   users:20,
   lengthOfCodes:12,
   nbr_of_codes_per_user:20,
