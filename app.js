@@ -3,7 +3,7 @@ var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser')
 var Random = require("random-js")(); // uses the nativeMath engine
 var app = express();
-var expressWs = require('express-ws')(app); //app = express app
+var expressWs = require('express-ws')(app);
 var wrongTries = 0;
 var wrongAdminTries = 0;
 var currentCountDown;
@@ -172,13 +172,9 @@ function isValidCode(code) {
         return false;
     }
 
-    for (var i = 0; i < codes.length; i++) {
-        if (codes[i][vote.id - 1] == code) {
-            return true;
-        }
-    }
-
-    return false;
+    return codes.some(function(c) {
+        return c[vote.id - 1] == code;
+    });
 }
 
 function isValidAmountOfVotes(vote) {
@@ -186,12 +182,9 @@ function isValidAmountOfVotes(vote) {
 }
 
 function checkIfAllOptionsAreValid(vote) {
-    for (var i = 0; i < vote.length; i++) {
-        if (votesCount[vote[i]] == undefined) {
-            return false;
-        }
-    }
-    return true;
+    return vote.every(function(v) {
+        return votesCount[v] !== undefined;
+    });
 }
 
 function increaseVoteForOption(optionIndex) {
@@ -244,5 +237,5 @@ var server = app.listen(app.get('port'), function() {
     var host = server.address().address;
     var port = server.address().port;
 
-    console.log('Example app listening at http://%s:%s', host, port);
+    console.log('VoteIT listening at http://%s:%s', host, port);
 });
