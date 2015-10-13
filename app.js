@@ -110,7 +110,7 @@ app.post('/createVoteSession', function(req, res) {
         winners: []
     };
 
-    votesCount = Array.apply(null, Array(optionsList.length)).map(function(x, i) {
+    votesCount = Array.apply(null, Array(optionsList.length + vacantOptions.length)).map(function(x, i) {
         return 0;
     });
 
@@ -159,7 +159,7 @@ app.post('/vote', function(req, res) {
 
     if (checkIfAllOptionsAreValid(vote)) {
         vote.map(function(optionIndex) {
-          increaseVoteForOption(optionIndex - 1);
+            increaseVoteForOption(optionIndex - 1);
         });
         res.send('Vote registered');
     } else {
@@ -193,9 +193,9 @@ function checkIfAllOptionsAreValid(vote) {
     }
     return true;
 }
-           
+
 function increaseVoteForOption(optionIndex) {
-   votesCount[optionIndex]++;
+    votesCount[optionIndex]++;
 }
 
 app.post('/login', function(req, res) {
