@@ -143,42 +143,60 @@ function countDown() {
 }
 
 app.post('/vote', function(req, res) {
-    var validCode = false;
-    if (req.body.code == undefined) {
-        res.send('FAIL: code not defined');
-    }
-    for (var i = 0; i < codes.length; i++) {
-        if (codes[i][vote.id - 1] == req.body.code) {
-            validCode = true;
-            break;
-        }
-    }
-    if (validCode) { 
-        if (req.body.vote.length > vote.maximumNbrOfVotes) {
-            res.send('FAIL to many votes');
-        } else {
-            var allExist = true;
-            for (var i = 0; i < req.body.vote.length; i++) {
-                if (votesCount[req.body.vote[i]] == undefined) {
-                    allExist = false;
-
-                }
-            }
-
-            if (allExist) {
-                for (var i = 0; i < req.body.vote.length; i++) {
-                    votesCount[req.body.vote[i] - 1]++;
-                }
-                res.send('okej');
-            } else {
-                res.send('FAIL try to vote on a non existing thing');
-            }
-        }
-    } else {
+    if (!isValidCode(res.body.code)) {
         wrongTries++;
         res.send('FAIL: invalid code');
+        return;
+    }
+
+    var vote = res.body.vote;
+
+    if (!isValidAmountOfVotes(vote)) {
+        wrongTries++;
+        res.send('FAIL: invalid amount of votes');
+        return;
+    }
+
+    if (checkIfAllOptionsAreValid(vote)) {
+        vote.map(function(optionIndex) {
+          increaseVoteForOption(optionIndex - 1);
+        });
+        res.send('Vote registered');
+    } else {
+        res.send('FAIL: invalid option voted for');
     }
 });
+
+function isValidCode(code) {
+    if (code == undefined) {
+        return false;
+    }
+
+    for (var i = 0; i < codes.length; i++) {
+        if (codes[i][vote.id - 1] == code) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+function isValidAmountOfVotes(vote) {
+    return vote.length <= vote.maximumNbrOfVotes
+}
+
+function checkIfAllOptionsAreValid(vote) {
+    for (var i = 0; i < vote.length; i++) {
+        if (votesCount[vote[i]] == undefined) {
+            return false;
+        }
+    }
+    return true;
+}
+           
+function increaseVoteForOption(optionIndex) {
+   votesCount[optionIndex]++;
+}
 
 app.post('/login', function(req, res) {
     //res.send(test+' Hello World!');
@@ -222,7 +240,6 @@ function randomString(length, chars) {
     return result;
 }
 
-//server start stuff.
 var server = app.listen(app.get('port'), function() {
     var host = server.address().address;
     var port = server.address().port;
