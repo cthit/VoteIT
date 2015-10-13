@@ -5,26 +5,11 @@ $(function() {
     var maxVotes = $("#maximumNbrOfVotes").val();
 
     $('.optionsform').on('change', '.voteoption', function(event) {
-        if ($(this).prop('checked')) {
-          handleOptionChecked();
-        } else {
-          handleOptionUnchecked();
-        }
-        $("#votesleft").html(maxVotes - optionAmount);
+        handleVoteOptionEvent();
     });
 
     $('.optionsform').on('change', '.vacant', function(event) {
-        var id = $(this).prop('id');
-        id = parseInt(id.replace('vakant', ''));
-        var newId = '#vakant' + (id + 1);
-
-        if ($(this).prop('checked')) {
-          handleVacantOptionChecked(newId);
-        } else {
-          handleVacantOptionUnchecked(newId);
-        }
-
-        $("#votesleft").html(maxVotes - optionAmount);
+        handleVacantOptionEvent();
     })
 
     window.setInterval(countDown, 1000);
@@ -38,35 +23,58 @@ $(function() {
     }
 
     function setAllVacantBoxesDisabledExceptOne() {
-      $('.vacant').prop('disabled', true);
-      $('#vakant1').prop('disabled', false);
+        $('.vacant').prop('disabled', true);
+        $('#vakant1').prop('disabled', false);
+    }
+
+    function handleVoteOptionEvent() {
+        if ($(this).prop('checked')) {
+            handleOptionChecked();
+        } else {
+            handleOptionUnchecked();
+        }
+        $("#votesleft").html(maxVotes - optionAmount);
     }
 
     function handleOptionChecked() {
-      optionAmount++;
-      if (optionAmount == maxVotes) {
-          $('.voteoption:not(:checked)').prop('disabled', true);
-      }
+        optionAmount++;
+        if (optionAmount == maxVotes) {
+            $('.voteoption:not(:checked)').prop('disabled', true);
+        }
+    }
+
+    function handleVacantOptionEvent() {
+        var id = $(this).prop('id');
+        id = parseInt(id.replace('vakant', ''));
+        var newId = '#vakant' + (id + 1);
+
+        if ($(this).prop('checked')) {
+            handleVacantOptionChecked(newId);
+        } else {
+            handleVacantOptionUnchecked(newId);
+        }
+
+        $("#votesleft").html(maxVotes - optionAmount);
     }
 
     function handleOptionUnchecked() {
-      optionAmount--;
-      $('.voteoption:not(.vacant):not(:checked)').prop('disabled', false);
-      $('#vakant1').prop('disabled', false);
+        optionAmount--;
+        $('.voteoption:not(.vacant):not(:checked)').prop('disabled', false);
+        $('#vakant1').prop('disabled', false);
     }
 
     function handleVacantOptionChecked(vacantId) {
-      if (optionAmount) {
-        $(vacantId).prop('disabled', false);
-      }
+        if (optionAmount) {
+            $(vacantId).prop('disabled', false);
+        }
     }
 
     function handleVacantOptionUnchecked(vacantId) {
-      if ($(newId).prop('checked')) {
-        optionAmount--;
-        $(newId).prop('checked', false);
-        $(newId).prop('disabled', true);
-      }
+        if ($(newId).prop('checked')) {
+            optionAmount--;
+            $(newId).prop('checked', false);
+            $(newId).prop('disabled', true);
+        }
     }
 
 });
