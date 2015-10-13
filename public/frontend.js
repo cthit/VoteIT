@@ -4,7 +4,7 @@ $(function() {
     $('.vacant').prop('disabled', true);
     $('#vakant1').prop('disabled', false);
 
-    var maxVotes = $("#maximumnrOfVotes").val();
+    var maxVotes = $("#maximumNbrOfVotes").val();
 
     $('.optionsform').on('change', '.voteoption', function(event) {
 
