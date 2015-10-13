@@ -1,15 +1,15 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
 <script src="/frontend.js"></script>
-<%if (state=="noVote") { %>
+<%if (state==POSSIBLE_STATES.noVote) { %>
   <h1>No Voting session at the time</h1>
   There is no election at the time, try again later.
-<%}else if(state=="vote"){ %>
+<%}else if(state==POSSIBLE_STATES.vote){ %>
   <h1>Voting session open</h1>
  Vote nr:<%= vote.id %>
  Time left:<span id="timeleft"><%= vote.timeLeft %></span> in sek
- <input type="hidden" id="maximumnrOfVotes" value="<%= vote.maximumnrOfVotes %>">
+ <input type="hidden" id="maximumNbrOfVotes" value="<%= vote.maximumNbrOfVotes %>">
  <br>
- You have <span id="votesleft"><%= vote.maximumnrOfVotes %></span> votes left
+ You have <span id="votesleft"><%= vote.maximumNbrOfVotes %></span> votes left
 
 <form class="optionsform" action="vote" method="post" >
 

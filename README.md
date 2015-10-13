@@ -27,7 +27,7 @@ A voting system for student Division Meeting (Sektionsmöte).
 * Vote counter: Create new app
 * Vote counter: Choose the name: Sektionsmote-{datum} eg Sektionsmote-2015-08-10
 * Vote counter: Link github account to heroku account
-* Vote counter: Create enviroment variable. KEY='your super secret password'.
+* Vote counter: Create enviroment variable. PASSWORD='your super secret password'.
 * Vote counter: Deploy the forked VoteIT
 * Vote counter: Go to the url + /admin
 * Vote counter: Log in with your super secret password.
