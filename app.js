@@ -44,17 +44,18 @@ app.use(express.static('public'));
 
 var POSSIBLE_STATES = {
     no_vote: "noVote",
-    vote: "vote"
+    vote: "vote",
     result: "result"
 }
 
-var state = "noVote";
+var state = POSSIBLE_STATES.no_vote;
 
 app.get('/', function(req, res) {
     console.log(vote);
     res.render('frontend.html', {
         state: state,
-        vote: vote
+        vote: vote,
+        POSSIBLE_STATES: POSSIBLE_STATES
     });
 });
 
@@ -70,7 +71,7 @@ app.post('/loginAdmin', function(req, res) {
         });
         res.redirect('/admin');
     } else {
-        res.send('FAIL');
+        res.send('Invalid login credentials');
     }
 });
 

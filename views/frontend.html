@@ -16,7 +16,7 @@
   <% vote.options.sort(function() { return .5 - Math.random() }).concat(vote.vacoptions).forEach(function(option)  { %>
 
     <label>
-      <input type="checkbox" id="<%= option.vac ? option.name.toLowerCase() : ('vote' + option.id) %>" name="vote" value="<%= option.id %>" class="voteoption <%= option.vac ? 'vacant':'' %>" />
+      <input type="checkbox" id="<%= option.vacant ? option.name.toLowerCase() : ('vote' + option.id) %>" name="vote" value="<%= option.id %>" class="voteoption <%= option.vacant ? 'vacant':'' %>" />
       <%= option.name %>
     </label>
     <br>
