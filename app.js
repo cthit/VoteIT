@@ -43,15 +43,15 @@ app.set('view engine', 'ejs');
 app.use(express.static('public'));
 
 var POSSIBLE_STATES = {
-    no_vote: "noVote",
+    noVote: "noVote",
     vote: "vote",
     result: "result"
 }
 
-var state = POSSIBLE_STATES.no_vote;
+var state = POSSIBLE_STATES.noVote;
 
 app.get('/', function(req, res) {
-    console.log(vote);
+    console.log('vote', vote);
     res.render('frontend.html', {
         state: state,
         vote: vote,

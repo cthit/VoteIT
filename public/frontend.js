@@ -1,4 +1,5 @@
 var optionAmount = 0;
+
 $(function() {
     setAllVacantBoxesDisabledExceptOne();
 
