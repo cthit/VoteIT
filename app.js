@@ -1,9 +1,9 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser')
-var Random = require("random-js")(); // uses the nativeMath engine
+var utils = require('./utils.js');
+var VoteSessionFactory = require('./voteSessionFactory.js');
 var app = express();
-var expressWs = require('express-ws')(app);
 var wrongTries = 0;
 var wrongAdminTries = 0;
 var currentCountDown;
@@ -13,8 +13,6 @@ app.set('port', (process.env.PORT || 5000));
 app.set('password', (process.env.PASSWORD || 'admin'));
 
 
-
-var voteSessionNumber = 1;
 
 var vote = {};
 
@@ -26,8 +24,7 @@ var conf = {
     lengthOfCodes: 12,
     nbrOfCodesPerUser: 20,
     maxWrongTries: 10000,
-    maxWrongAdminTries: 100,
-    base58string: '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz'
+    maxWrongAdminTries: 100
 }
 
 var codes = [];
@@ -46,24 +43,24 @@ var POSSIBLE_STATES = {
     noVote: "noVote",
     vote: "vote",
     result: "result"
-}
+};
+app.locals.POSSIBLE_STATES = POSSIBLE_STATES;
 
-var state = POSSIBLE_STATES.noVote;
+app.locals.CURRENT_STATE = POSSIBLE_STATES.noVote;
+app.locals.VOTE_SESSION_NUMBER = 0;
 
 app.get('/', function(req, res) {
     console.log('vote', vote);
     res.render('frontend.html', {
-        state: state,
-        vote: vote,
-        POSSIBLE_STATES: POSSIBLE_STATES
+        vote: vote
     });
 });
 
-app.get('/loginAdmin', function(req, res) {
+app.get('/login', function(req, res) {
     res.render('loginAdmin.html');
 });
 
-app.post('/loginAdmin', function(req, res) {
+app.post('/login', function(req, res) {
     if (req.body.pass == conf.pass) {
         res.cookie('password', req.body.pass, {
             maxAge: 900000,
@@ -75,51 +72,68 @@ app.post('/loginAdmin', function(req, res) {
     }
 });
 
+app.post('/vote', function(req, res) {
+    if (!isValidCode(req.body.code, codes)) {
+        wrongTries++;
+        res.send('FAIL: invalid code');
+        return;
+    }
+
+    var vote = req.body.vote;
+
+    if (!isValidAmountOfVotes(vote)) {
+        wrongTries++;
+        res.send('FAIL: invalid amount of votes');
+        return;
+    }
+
+    if (checkIfAllOptionsAreValid(vote)) {
+        vote.map(function(optionIndex) {
+            increaseVoteForOption(optionIndex - 1);
+        });
+        codes = removeUsedCode(req.body.code, codes)
+        res.send('Vote registered');
+    } else {
+        res.send('FAIL: invalid option voted for');
+    }
+});
+
+app.get('/admin', function(req, res) {
+    if (req.cookies.password != conf.pass) {
+        res.redirect('/login');
+    } else {
+        res.render('admin.html');
+    }
+});
+
+app.get('/admin/print', function(req, res) {
+    if (req.cookies.password != conf.pass) {
+        res.redirect('/login');
+    } else {
+        codes = utils.generateCodes(conf.users, conf.nbrOfCodesPerUser, conf.lengthOfCodes);
+
+        res.render('print.html', {
+            codes: codes
+        });
+    }
+});
+
 app.get('/createVoteSession', function(req, res) {
     res.render('createVoteSession.html');
 });
 
 app.post('/createVoteSession', function(req, res) {
-    state = POSSIBLE_STATES.vote;
+    app.locals.CURRENT_STATE = POSSIBLE_STATES.vote;
 
-    var optionsList = req.body.textbox.map(function(value, index) {
-        return {
-            id: index,
-            name: value,
-            vacant: false
-        };
-    });
+    var candidates = req.body.textbox;
+    var vacantEnabled = req.body.vacant == 'on';
+    var maxCandidates = req.body.max_candidates;
+    var maxTimeInSeconds = req.body.maxtime;
 
-    var vacantOptions = [];
-    if (req.body.vakant == 'on') {
-        for (var i = 0; i < req.body.maxallowedoptions; i++) {
-            var index = optionsList.length + i
-            vacantOptions.push({
-                id: index,
-                name: "Vakant" + (i + 1),
-                vacant: true
-            });
-        };
-    }
+    vote = VoteSessionFactory.createVoteSession(candidates, vacantEnabled, maxCandidates, maxTimeInSeconds);
+    votesCount = VoteSessionFactory.createEmptyVoteResults(vote.options, vote.vacantOptions);
 
-    vote = {
-        id: voteSessionNumber,
-        timeLeft: req.body.maxtime, //in sek
-        options: optionsList,
-        vacantOptions: vacantOptions,
-        maximumNbrOfVotes: req.body.maxallowedoptions,
-        winners: []
-    };
-
-    votesCount = {};
-    vote.options.concat(vote.vacantOptions).forEach(function(option) {
-        votesCount[option.index] = {
-            value: 0,
-            item: option
-        }
-    });
-
-    voteSessionNumber++;
+    app.locals.VOTE_SESSION_NUMBER++;
     res.redirect('/admin');
     currentCountDown = setInterval(countDown, 1000);
 });
@@ -159,25 +173,24 @@ function countVotes() {
     }
 
     vote.winners = winners;
-    state = POSSIBLE_STATES.result;
+    app.locals.CURRENT_STATE = POSSIBLE_STATES.result;
 }
 
 function isVacant(item) {
     return Boolean(item.vacant);
 }
 
-function pickWinnersWhenSameVoteCount(spots, options) {
+function pickWinnersWhenSameVoteCount(spots, candidates) {
     var winners = [];
-    var vacantLessOptions = options.filter(!isVacant);
+    var vacantLessOptions = candidates.reject(isVacant);
     if(spots >= vacantLessOptions.length){
         winners = winners.concat(vacantLessOptions)
-        var vacantOnlyOptions = options.filter(isVacant);
+        var vacantOnlyOptions = candidates.filter(isVacant);
         while (spots - winners.length > 0){
             winners.push(vacantOnlyOptions.pop());
         }
     } else {
-        var engine = Random.engines.mt19937().autoSeed();
-        Random.shuffle(engine,vacantLessOptions);
+        vacantLessOptions.shuffle();
         while (spots - winners.length > 0) {
             winners.push(vacantLessOptions.pop());
         }
@@ -187,7 +200,7 @@ function pickWinnersWhenSameVoteCount(spots, options) {
 }
 
 function compareVoteItem(item1, item2) {
-    diff = item1.value - item2.value
+    var diff = item1.value - item2.value
     if(diff < 0){
         return -1;
     } else if (diff > 0) {
@@ -197,47 +210,20 @@ function compareVoteItem(item1, item2) {
     }
 }
 
-app.post('/vote', function(req, res) {
-    console.log(req, res);
-    if (!isValidCode(req.body.code, codes)) {
-        wrongTries++;
-        res.send('FAIL: invalid code');
-        return;
-    }
-
-    var vote = req.body.vote;
-
-    if (!isValidAmountOfVotes(vote)) {
-        wrongTries++;
-        res.send('FAIL: invalid amount of votes');
-        return;
-    }
-
-    if (checkIfAllOptionsAreValid(vote)) {
-        vote.map(function(optionIndex) {
-            increaseVoteForOption(optionIndex - 1);
-        });
-        codes = removeUsedCode(req.body.code, codes)
-        res.send('Vote registered');
-    } else {
-        res.send('FAIL: invalid option voted for');
-    }
-});
-
 function isValidCode(code, codes) {
     if (code == undefined) {
         return false;
     }
 
-    return codes.some(function(c) {
-        return c[vote.id - 1] == code;
-    });
+    return codes.some(codeExists);
+}
+
+function codeExists(c) {
+    return c[app.locals.VOTE_SESSION_NUMBER] == code;
 }
 
 function removeUsedCode(code, codes) {
-    return codes.filter(function(c) {
-        return c[vote.id - 1] != code;
-    });
+    return codes.reject(codeExists);
 }
 
 function isValidAmountOfVotes(vote) {
@@ -254,47 +240,6 @@ function increaseVoteForOption(optionIndex) {
     votesCount[optionIndex].value++;
 }
 
-app.post('/login', function(req, res) {
-    //res.send(test+' Hello World!');
-});
-
-app.get('/admin', function(req, res) {
-    if (req.cookies.password != conf.pass) {
-        res.redirect('/loginAdmin');
-    } else {
-        res.render('admin.html');
-    }
-});
-
-app.get('/admin/print', function(req, res) {
-    if (req.cookies.password != conf.pass) {
-        res.redirect('/loginAdmin');
-    } else {
-        res.render('print.html', {
-            codes: generateCodes()
-        });
-    }
-});
-
-var generateCodes = function() {
-    codes = [];
-    for (var i = 0; i < conf.users; i++) {
-        oneUserCodes = [];
-        for (var j = 0; j < conf.nbrOfCodesPerUser; j++) {
-            oneUserCodes.push(randomString(conf.lengthOfCodes, conf.base58string));
-        }
-        codes.push(oneUserCodes);
-    }
-    return codes;
-}
-
-function randomString(length, chars) {
-    var result = '';
-    for (var i = length; i > 0; --i) {
-        result += chars[Random.integer(0, chars.length - 1)];
-    }
-    return result;
-}
 
 var server = app.listen(app.get('port'), function() {
     var host = server.address().address;

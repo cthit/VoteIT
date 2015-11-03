@@ -4,7 +4,8 @@
   "description": "A voting system for student Division Meeting(Student möte).",
   "main": "index.js",
   "scripts": {
-    "start": "node app.js"
+    "start": "node app.js",
+    "test": "jest"
   },
   "repository": {
     "type": "git",
@@ -32,6 +33,7 @@
   },
   "devDependencies": {
     "gulp-livereload": "^3.8.1",
-    "gulp-nodemon": "^2.0.4"
+    "gulp-nodemon": "^2.0.4",
+    "jest-cli": "^0.7.0"
   }
 }
