@@ -116,19 +116,19 @@ app.post('/createVoteSession', function(req, res) {
     });
 
     votesCount = {};
-    vote.optionsList.forEach(option) {
+    vote.optionsList.forEach(function(option) {
         votesCount[options.index] = {
             value: 0,
             item: option
         }
-    }
+    });
 
-    vote.vacantOptions.forEach(vacantOption) {
+    vote.vacantOptions.forEach(function(vacantOption) {
         votesCount[vacantOption.index] = {
             value: 0,
             item: vacantOption
         }
-    }
+    });
 
     voteSessionNumber++;
     res.redirect('/admin');
