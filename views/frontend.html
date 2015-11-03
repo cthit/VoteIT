@@ -6,7 +6,7 @@
   There is no election at the time, try again later.
 <%} else if (CURRENT_STATE == POSSIBLE_STATES.vote){ %>
   <h1>Voting session open</h1>
- Vote nr:<%= app.locals.VOTE_SESSION_NUMBER + 1 %>
+ Vote nr:<%= VOTE_SESSION_NUMBER + 1 %>
  Time left:<span id="timeleft"><%= vote.timeLeft %></span> in sek
  <input type="hidden" id="maximumNbrOfVotes" value="<%= vote.maximumNbrOfVotes %>">
  <br>
