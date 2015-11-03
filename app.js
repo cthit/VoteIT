@@ -115,6 +115,21 @@ app.post('/createVoteSession', function(req, res) {
         return 0;
     });
 
+    votesCount = {};
+    vote.optionsList.forEach(option) {
+        votesCount[options.index] = {
+            value: 0,
+            item: option
+        }
+    }
+
+    vote.vacantOptions.forEach(vacantOption) {
+        votesCount[vacantOption.index] = {
+            value: 0,
+            item: vacantOption
+        }
+    }
+
     voteSessionNumber++;
     res.redirect('/admin');
     currentCountDown = setInterval(countDown, 1000);
@@ -130,27 +145,59 @@ function countDown() {
 
 function countVotes() {
 
-    votesOfOptions = votesCount.map(function(value, index) { return { index: index, value: value } })
-    .sort(compareVoteItems)
+    votesCount.sort(compareVoteItem);
 
-    potentialWinners = []
-    for(var i = 0; i < vote.maximumNbrOfVotes - 1; i++) {
-        if(votesOfOptions[i].value > votesOfOptions[i + 1]) {
-            potentialWinners.push(votesOfOptions[i])
+    var groupedOptions = votesOfOptions.reduce(function(acc, curr){
+        acc[curr.value] = acc[curr.value] || []
+        acc[curr.value].push(curr.item);
+    }, {});
+
+    var keys = Object.keys(groupedOptions).sort().reverse();
+    var winners = [];
+
+    while(vote.maximumNbrOfVotes - winners.length > 0){
+        var key = keys.pop();
+        if(groupedOptions[key].length <= spots) {
+            winners = winners.concat(groupedOptions[key])
         } else {
-            var sameValuedOptions = [voteOfOptions[i]]
-            for(var j = i+1; j < vote.maximumNbrOfVotes; j++){
-                if()
-            }
-        }
-    }
+            winners = winners.concat(
+                pickWinnersWhenSameVoteCount(
+                    vote.maximumNbrOfVotes - winners.length, 
+                    groupedOptions[key]
+                )
+            );
+        }        
+    }    
 
-    vote.winners.push();
-    
+    vote.winners = winners;
     state = POSSIBLE_STATES.result;
 }
 
-function vompareVoteItem(item1, item2) {
+function isVacant(item) {
+    return Boolean(item.vacant);
+}
+
+function pickWinnersWhenSameVoteCount(spots, options) {
+    var winners = [];
+    var vacantLessOptions = options.filter(!isVacant);
+    if(spots >= vacantLessOptions.length){
+        winners = winners.concat(vacantLessOptions)
+        var vacantOnlyOptions = options.filter(isVacant);
+        while (spots - winners.length > 0){
+            winners.push(vacantOnlyOptions.pop());
+        }
+    } else {
+        var engine = Random.engines.mt19937().autoSeed();
+        Random.shuffle(engine,vacantLessOptions);
+        while (spots - winners.length > 0) {
+            winners.push(vacantLessOptions.pop());
+        }
+    }
+
+    return winners;
+}
+
+function compareVoteItem(item1, item2) {
     diff = item1.value - item2.value
     if(diff < 0){
         return -1;
@@ -214,7 +261,7 @@ function checkIfAllOptionsAreValid(vote) {
 }
 
 function increaseVoteForOption(optionIndex) {
-    votesCount[optionIndex]++;
+    votesCount[optionIndex].value++;
 }
 
 app.post('/login', function(req, res) {
