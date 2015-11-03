@@ -14,7 +14,7 @@
 
 <form class="optionsform" action="vote" method="post" >
 
-  <% vote.options.sort(function() { return .5 - Math.random() }).concat(vote.vacoptions).forEach(function(option)  { %>
+  <% vote.options.sort(function() { return .5 - Math.random() }).concat(vote.vacantOptions).forEach(function(option)  { %>
 
     <label>
       <input type="checkbox" id="<%= option.vacant ? option.name.toLowerCase() : ('vote' + option.id) %>" name="vote" value="<%= option.id %>" class="voteoption <%= option.vacant ? 'vacant':'' %>" />

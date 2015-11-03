@@ -5,9 +5,9 @@
 	font-family: monospace;
 }
 
-.print-wrapper table { 
-	page-break-inside:avoid; 
-	page-break-after:auto 
+.print-wrapper table {
+	page-break-inside:avoid;
+	page-break-after:auto;
 }
 
 td.index {
@@ -21,5 +21,5 @@ td.index {
 
 .code-table {
 	border: 1px solid;
-	margin: 1em
+	margin: 1em;
 }

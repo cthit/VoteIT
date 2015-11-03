@@ -7,7 +7,7 @@ $(document).ready(function() {
             .attr("id", 'TextBoxDiv' + counter);
 
         newTextBoxDiv.after().html(
-          '<label>Option #' + (counter) + ' : </label>' + 
+          '<label>Option #' + (counter) + ' : </label>' +
           '<input type="text" name="textbox[]" id="textbox' + counter + '" value="" placeholder="Write an option.." >'
           );
 
@@ -17,7 +17,7 @@ $(document).ready(function() {
 
     $("#removeButton").click(function() {
         if (counter == 2) {
-            alert("Need more than two option");
+            alert("Need more than two options");
             return false;
         }
 

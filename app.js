@@ -111,22 +111,11 @@ app.post('/createVoteSession', function(req, res) {
         winners: []
     };
 
-    votesCount = Array.apply(null, Array(optionsList.length + vacantOptions.length)).map(function(x, i) {
-        return 0;
-    });
-
     votesCount = {};
-    vote.optionsList.forEach(function(option) {
-        votesCount[options.index] = {
+    vote.options.concat(vote.vacantOptions).forEach(function(option) {
+        votesCount[option.index] = {
             value: 0,
             item: option
-        }
-    });
-
-    vote.vacantOptions.forEach(function(vacantOption) {
-        votesCount[vacantOption.index] = {
-            value: 0,
-            item: vacantOption
         }
     });
 
@@ -162,12 +151,12 @@ function countVotes() {
         } else {
             winners = winners.concat(
                 pickWinnersWhenSameVoteCount(
-                    vote.maximumNbrOfVotes - winners.length, 
+                    vote.maximumNbrOfVotes - winners.length,
                     groupedOptions[key]
                 )
             );
-        }        
-    }    
+        }
+    }
 
     vote.winners = winners;
     state = POSSIBLE_STATES.result;
@@ -204,18 +193,19 @@ function compareVoteItem(item1, item2) {
     } else if (diff > 0) {
         return 1;
     } else {
-        return item2.index - item1.index 
+        return item2.index - item1.index
     }
 }
 
 app.post('/vote', function(req, res) {
-    if (!isValidCode(res.body.code, codes)) {
+    console.log(req, res);
+    if (!isValidCode(req.body.code, codes)) {
         wrongTries++;
         res.send('FAIL: invalid code');
         return;
     }
 
-    var vote = res.body.vote;
+    var vote = req.body.vote;
 
     if (!isValidAmountOfVotes(vote)) {
         wrongTries++;
@@ -227,7 +217,7 @@ app.post('/vote', function(req, res) {
         vote.map(function(optionIndex) {
             increaseVoteForOption(optionIndex - 1);
         });
-        codes = removeUsedCode(res.body.code, codes)
+        codes = removeUsedCode(req.body.code, codes)
         res.send('Vote registered');
     } else {
         res.send('FAIL: invalid option voted for');
@@ -246,7 +236,7 @@ function isValidCode(code, codes) {
 
 function removeUsedCode(code, codes) {
     return codes.filter(function(c) {
-        return c[vote.id - 1] != code; 
+        return c[vote.id - 1] != code;
     });
 }
 
