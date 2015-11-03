@@ -1,14 +1,3 @@
-function createEmptyVoteResults(candidates, vacantCandidates) {
-    var votesCount = {};
-    candidates.concat(vacantCandidates).forEach(function(option) {
-        votesCount[option.index] = {
-            value: 0,
-            item: option
-        }
-    });
-    return votesCount;
-}
-
 function createVoteSession(candidateNames, vacantEnabled, maxCandidates, maxTimeInSeconds) {
     var candidates = candidateNames.map(function(value, index) {
         return {
@@ -41,6 +30,5 @@ function createVoteSession(candidateNames, vacantEnabled, maxCandidates, maxTime
 
 
 module.exports = {
-    createVoteSession: createVoteSession,
-    createEmptyVoteResults: createEmptyVoteResults
+    createVoteSession: createVoteSession
 };
