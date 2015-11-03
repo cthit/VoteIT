@@ -6,11 +6,11 @@ $(function() {
     var maxVotes = $("#maximumNbrOfVotes").val();
 
     $('.optionsform').on('change', '.voteoption', function(event) {
-        handleVoteOptionEvent();
+        handleVoteOptionEvent($(this));
     });
 
     $('.optionsform').on('change', '.vacant', function(event) {
-        handleVacantOptionEvent();
+        handleVacantOptionEvent($(this));
     })
 
     window.setInterval(countDown, 1000);
@@ -28,8 +28,8 @@ $(function() {
         $('#vakant1').prop('disabled', false);
     }
 
-    function handleVoteOptionEvent() {
-        if ($(this).prop('checked')) {
+    function handleVoteOptionEvent(self) {
+        if (self.prop('checked')) {
             handleOptionChecked();
         } else {
             handleOptionUnchecked();
@@ -44,15 +44,17 @@ $(function() {
         }
     }
 
-    function handleVacantOptionEvent() {
-        var id = $(this).prop('id');
+    function handleVacantOptionEvent(self) {
+        var id = self.prop('id');
         id = parseInt(id.replace('vakant', ''));
-        var newId = '#vakant' + (id + 1);
-
-        if ($(this).prop('checked')) {
-            handleVacantOptionChecked(newId);
+        var pre = '#vakant';
+        if (self.prop('checked')) {
+            handleVacantOptionChecked(pre + (id + 1));
         } else {
-            handleVacantOptionUnchecked(newId);
+            while(id <= maxVotes){
+                handleVacantOptionUnchecked(pre + (id+1));
+                id++;
+            }
         }
 
         $("#votesleft").html(maxVotes - optionAmount);
@@ -65,16 +67,18 @@ $(function() {
     }
 
     function handleVacantOptionChecked(vacantId) {
-        if (optionAmount) {
+        if (optionAmount == maxVotes) {
+            $('.voteoption:not(:checked)').prop('disabled', true);
+        } else {
             $(vacantId).prop('disabled', false);
         }
     }
 
     function handleVacantOptionUnchecked(vacantId) {
-        if ($(newId).prop('checked')) {
+        if ($(vacantId).prop('checked')) {
             optionAmount--;
-            $(newId).prop('checked', false);
-            $(newId).prop('disabled', true);
+            $(vacantId).prop('checked', false);
+            $(vacantId).prop('disabled', true);
         }
     }
 
