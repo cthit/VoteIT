@@ -123,28 +123,46 @@ app.post('/createVoteSession', function(req, res) {
 function countDown() {
     vote.timeLeft--;
     if (vote.timeLeft == 0) {
-        for (var i = 0; i < vote.maximumNbrOfVotes; i++) {
-            var aWinner = votesCount.indexOf(Math.max.apply(Math, votesCount)) + 1;
-            votesCount[aWinner - 1] = -1;
-
-            var findById = function(arr, id) {
-                for (var i = 0; i < arr.length; i++) {
-                    console.log(arr[i].id + " - " + id);
-                    if (arr[i].id == id) {
-                        return arr[i];
-                    }
-                }
-            }
-
-            vote.winners.push(findById(vote.options, aWinner));
-        }
-        state = POSSIBLE_STATES.result;
+        countVotes();
         clearInterval(currentCountDown);
     }
 }
 
+function countVotes() {
+
+    votesOfOptions = votesCount.map(function(value, index) { return { index: index, value: value } })
+    .sort(compareVoteItems)
+
+    potentialWinners = []
+    for(var i = 0; i < vote.maximumNbrOfVotes - 1; i++) {
+        if(votesOfOptions[i].value > votesOfOptions[i + 1]) {
+            potentialWinners.push(votesOfOptions[i])
+        } else {
+            var sameValuedOptions = [voteOfOptions[i]]
+            for(var j = i+1; j < vote.maximumNbrOfVotes; j++){
+                if()
+            }
+        }
+    }
+
+    vote.winners.push();
+    
+    state = POSSIBLE_STATES.result;
+}
+
+function vompareVoteItem(item1, item2) {
+    diff = item1.value - item2.value
+    if(diff < 0){
+        return -1;
+    } else if (diff > 0) {
+        return 1;
+    } else {
+        return item2.index - item1.index 
+    }
+}
+
 app.post('/vote', function(req, res) {
-    if (!isValidCode(res.body.code)) {
+    if (!isValidCode(res.body.code, codes)) {
         wrongTries++;
         res.send('FAIL: invalid code');
         return;
@@ -162,19 +180,26 @@ app.post('/vote', function(req, res) {
         vote.map(function(optionIndex) {
             increaseVoteForOption(optionIndex - 1);
         });
+        codes = removeUsedCode(res.body.code, codes)
         res.send('Vote registered');
     } else {
         res.send('FAIL: invalid option voted for');
     }
 });
 
-function isValidCode(code) {
+function isValidCode(code, codes) {
     if (code == undefined) {
         return false;
     }
 
     return codes.some(function(c) {
         return c[vote.id - 1] == code;
+    });
+}
+
+function removeUsedCode(code, codes) {
+    return codes.filter(function(c) {
+        return c[vote.id - 1] != code; 
     });
 }
 
