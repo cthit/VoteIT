@@ -7,7 +7,6 @@ function VoteManager(candidates, vacantCandidates, maximumNbrOfVotes, sessionNbr
 
 VoteManager.prototype.closeVotingSession = function() {
     this.isOpen = false;
-
     return this.voteCount;
 };
 
@@ -25,7 +24,7 @@ function createEmptyVoteResults(candidates, vacantCandidates) {
 VoteManager.prototype.castVote = function(vote, code, validCodes) {
     var that = this;
     if (this.voteIsValid(vote)) {
-        vote.map(function(index) {
+        vote.forEach(function(index) {
             that.increaseVoteForOption(index - 1);
         });
         return removeUsedCode(code, validCodes, this.sessionNbr);
