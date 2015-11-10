@@ -23,9 +23,10 @@ function createEmptyVoteResults(candidates, vacantCandidates) {
 }
 
 VoteManager.prototype.castVote = function(vote, code, validCodes) {
+    var that = this;
     if (this.voteIsValid(vote)) {
         vote.map(function(index) {
-            this.increaseVoteForOption(index - 1);
+            that.increaseVoteForOption(index - 1);
         });
         return removeUsedCode(code, validCodes, this.sessionNbr);
     } else {
@@ -40,7 +41,7 @@ VoteManager.prototype.voteIsValid = function(vote) {
     if (!this.isValidAmountOfVotes(vote)) {
         throw 'Invalid amount of votes';
     }
-    if (!checkIfAllOptionsAreValid(vote)) {
+    if (!this.checkIfAllOptionsAreValid(vote)) {
         throw 'Invalid option voted for';
     }
     return true;
