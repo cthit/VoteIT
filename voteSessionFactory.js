@@ -10,13 +10,13 @@ function createVoteSession(candidateNames, vacantEnabled, maxCandidates, maxTime
     var vacantCandidates = [];
     if (vacantEnabled) {
         for (var i = 0; i < maxCandidates; i++) {
-            var index = candidates.length + i
+            var index = candidates.length + i;
             vacantCandidates.push({
                 id: index,
                 name: "Vakant" + (i + 1),
                 vacant: true
             });
-        };
+        }
     }
 
     return {
