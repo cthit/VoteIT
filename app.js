@@ -74,14 +74,31 @@ app.post('/vote', function(req, res) {
     var code = req.body.code;
 
     try {
-        if (!isValidCode(code, codes)) {
+        var sessionCodes = currentSessionCodes();
+
+        if (!isValidCode(code, sessionCodes)) {
             throw 'Invalid code';
         }
-        codes = VoteManager.castVote(vote, code, codes);
+        throw 'THIS WILL BREAK EVERYTHING';
+        codes = voteManager.castVote(vote, code, sessionCodes);
     } catch (e) {
         res.send('FAIL: ' + e);
     }
 });
+
+function isValidCode(code, codes) {
+    if (code == undefined) {
+        return false;
+    }
+
+    return codes.indexOf(code) !== -1;
+}
+
+function currentSessionCodes() {
+    return codes.map(function (code) {
+        return code[app.locals.VOTE_SESSION_NUMBER];
+    });
+}
 
 app.get('/admin', function(req, res) {
     if (req.cookies.password != conf.pass) {
@@ -120,8 +137,7 @@ app.post('/createVoteSession', function(req, res) {
 
     voteManager = new VoteManager(vote.options,
                                   vote.vacantOptions,
-                                  vote.maximumNbrOfVotes,
-                                  app.locals.VOTE_SESSION_NUMBER);
+                                  vote.maximumNbrOfVotes);
 
     res.redirect('/admin');
     currentCountDown = setInterval(countDown, 1000);
@@ -139,18 +155,6 @@ function countVotes() {
     var votesCount = voteManager.closeVotingSession();
     vote.winners = VoteCounter.countVotes(votesCount, vote.maximumNbrOfVotes);
     app.locals.CURRENT_STATE = POSSIBLE_STATES.result;
-}
-
-function isValidCode(code, codes) {
-    if (code == undefined) {
-        return false;
-    }
-
-    return codes.some(codeExists);
-}
-
-function codeExists(c) {
-    return c[app.locals.VOTE_SESSION_NUMBER] == code;
 }
 
 
