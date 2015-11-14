@@ -56,3 +56,7 @@ A voting system for student Division Meeting (Sektionsmöte).
 ###build###
 * gulp serve
 * gulp
+
+###How to use Docker###
+* docker build -t voteit .
+* docker run voteit
