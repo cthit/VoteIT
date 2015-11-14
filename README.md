@@ -58,5 +58,5 @@ A voting system for student Division Meeting (Sektionsmöte).
 * gulp
 
 ###How to use Docker###
-* docker build -t voteit .
-* docker run voteit
+* docker build -t cthit/voteit .
+* docker run cthit/voteit
