@@ -22,25 +22,16 @@ function createEmptyVoteResults(candidates, vacantCandidates) {
     return voteCount;
 }
 
-VoteManager.prototype.castVote = function(vote, code, validCodes) {
+VoteManager.prototype.castVote = function(vote) {
     var that = this;
-    if (this.voteIsValid(vote)) {
-        vote.forEach(function(key) {
-            that.increaseVoteForCandidate(key);
-        });
-        return removeUsedCode(code, validCodes);
-    } else {
-        return validCodes;
-    }
+    this.validateVote(vote);
+
+    vote.forEach(function(key) {
+        that.increaseVoteForCandidate(key);
+    });
 };
 
-function removeUsedCode(code, validCodes) {
-    return validCodes.reject(function(c) {
-        return c === code;
-    });
-}
-
-VoteManager.prototype.voteIsValid = function(vote) {
+VoteManager.prototype.validateVote = function(vote) {
     if (!this.isOpen) {
         throw 'Voting is closed';
     }
@@ -53,7 +44,6 @@ VoteManager.prototype.voteIsValid = function(vote) {
     if (!this.checkIfAllCandidatesInVoteAreValid(vote)) {
         throw 'Invalid option voted for';
     }
-    return true;
 };
 
 VoteManager.prototype.isValidAmountOfVotes = function(vote) {
@@ -61,7 +51,7 @@ VoteManager.prototype.isValidAmountOfVotes = function(vote) {
 };
 
 VoteManager.prototype.allVotesUnique = function(vote) {
-    var unique = vote.filter(function (value, index, self) {
+    var unique = vote.filter(function(value, index, self) {
         return self.indexOf(value) === index;
     });
 

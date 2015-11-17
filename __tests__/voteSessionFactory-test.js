@@ -1,4 +1,4 @@
-jest.dontMock('../voteSessionFactory');
+jest.autoMockOff();
 
 var VoteSessionFactory = require('../voteSessionFactory');
 

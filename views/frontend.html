@@ -6,7 +6,7 @@
   There is no election at the time, try again later.
 <%} else if (CURRENT_STATE == POSSIBLE_STATES.vote){ %>
   <h1>Voting session open</h1>
- Vote nr:<%= VOTE_SESSION_NUMBER + 1 %>
+ Vote nr: <%= sessionNumber + 1 %>
  Time left:<span id="timeleft"><%= vote.timeLeft %></span> in sek
  <input type="hidden" id="maximumNbrOfVotes" value="<%= vote.maximumNbrOfVotes %>">
  <br>
@@ -30,7 +30,7 @@
   </form>
 <% } else if (CURRENT_STATE == POSSIBLE_STATES.result){ %>
   Winner of election is:
-  <% vote.winners.sort(function() {return .5 - Math.random()}).forEach(function(winner,id)  { %>
+  <% vote.winners.sort(function() {return .5 - Math.random()}).forEach(function(winner, id)  { %>
     <label>
       <%= winner.name %>
     </label>

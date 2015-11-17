@@ -1,7 +1,6 @@
-jest.dontMock('../voteCounter');
-jest.dontMock('random-js');
+jest.autoMockOff();
 
-var VoteCounter = require('../voteCounter');
+var VoteCounter = require("../voteCounter");
 
 describe('voteCounter', function() {
     describe('moveFromArrayUntilLength', function() {

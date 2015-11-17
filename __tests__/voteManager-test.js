@@ -1,9 +1,8 @@
-jest.dontMock('../voteManager');
-jest.dontMock('random-js');
+jest.autoMockOff();
 
 var VoteManager = require('../voteManager');
 
-describe('voteManager', function () {
+describe('VoteManager', function () {
 
     describe('createEmptyVoteResults', function () {
         var candidates1 = [{index: 1}, {index: 2}, {index: 3}];
@@ -88,13 +87,11 @@ describe('voteManager', function () {
         it('should increase the num of votes for candidate c', function () {
             var vote = [1, 5];
 
-            var beforeObj = JSON.parse(JSON.stringify(vm.voteCount));
+            var beforeObj = Object.clone(vm.voteCount);
 
-            var validCodes = vm.castVote(vote, '1337', ['1337', '15']);
+            vm.castVote(vote);
 
-            expect(validCodes).toEqual(['15']);
-
-            var afterObj = JSON.parse(JSON.stringify(vm.voteCount));
+            var afterObj = Object.clone(vm.voteCount);
 
             expect(Object.keys(beforeObj)).toEqual(Object.keys(afterObj));
 
@@ -109,29 +106,29 @@ describe('voteManager', function () {
         });
 
         it('should not increase vote for invalid vote', function () {
-            var beforeObj = JSON.parse(JSON.stringify(vm.voteCount));
+            var beforeObj = Object.clone(vm.voteCount);
 
             var invalidVote = ['invalidIndex'];
 
             expect(function () {
-                vm.castVote(invalidVote, '1337', ['1337', '15']);
+                vm.castVote(invalidVote);
             }).toThrow('Invalid option voted for');
 
 
             var tooManyVotes = [1, 2, 3, 4, 5, 6];
 
             expect(function () {
-                vm.castVote(tooManyVotes, '1337', ['1337', '15']);
+                vm.castVote(tooManyVotes);
             }).toThrow('Invalid amount of votes');
 
 
             var duplicateVotes = [3, 3, 3];
 
             expect(function () {
-                vm.castVote(duplicateVotes, '1337', ['1337', '15']);
+                vm.castVote(duplicateVotes);
             }).toThrow('Duplicate votes');
 
-            var afterObj = JSON.parse(JSON.stringify(vm.voteCount));
+            var afterObj = Object.clone(vm.voteCount);
 
             expect(beforeObj).toEqual(afterObj);
 

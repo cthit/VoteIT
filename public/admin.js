@@ -24,4 +24,14 @@ $(document).ready(function() {
         $("#TextBoxDiv" + counter).remove();
         counter--;
     });
+
+    $("#createvotebutton").click(function() {
+        window.location = "/createVoteSession";
+    });
+
+    $("#printbutton").click(function() {
+        if (confirm("This is going to regenerate new codes, are you sure?")) {
+            window.location = "/admin/print";
+        }
+    });
 });
