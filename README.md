@@ -2,6 +2,8 @@
 A voting system for student Division Meeting (Sektionsmöte).
 -----------------------------
 
+[![Build Status](https://travis-ci.org/cthit/VoteIT.svg)](https://travis-ci.org/cthit/VoteIT)
+
 ###Features###
 * Anonymous voting.
 * Allows set amount of options to be accepted (eg, allow 3 options out of 5 to be accepted). So if the amount of allowed options is 2 and the options are "Agda", "Haskell" and "Erlang" both "Agda" and "Haskell" could be chosen. (personinval där en kommitté har limiterat antal platser)
