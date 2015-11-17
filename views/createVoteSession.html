@@ -1,20 +1,41 @@
 <link rel="stylesheet" type="text/css" href="/print.css">
-<form action="createVoteSession" method="post">
-  <label>Max Time(sec): </label><input type='number' name='maxtime' value="600" placeholder="Write the max time for the vote in minutes" > <br>
-  <label>Max allowed options for end user: </label><input type='number' name='max_candidates' placeholder="Write the max allowed options.." > <br>
-  <label>Add a Vakant option for the max allowed votes: </label><input type='checkbox' name='vacant' > <br>
-  <div id='TextBoxesGroup'>
-	   <div id="TextBoxDiv1">
-		     <label>Option #1 : </label><input type='textbox' name='textbox[]' placeholder="Write an option.." > <br>
-         <label>Option #2 : </label><input type='textbox' name='textbox[]' placeholder="Write an option.." >
-	      </div>
-  </div>
-<input type='button' value='+' id='addButton'>
-<input type='button' value='-' id='removeButton'>
-<br>
 
-  <input type='submit' value='Submit Vote' id='removeButton'>
+<form action="/createVoteSession" method="post">
+  <div>
+    <label>Max Time(sec):
+      <input type="number" name="maxtime" value="600" placeholder="Write the max time for the vote in minutes" />
+    </label>
+  </div>
+  <div>
+    <label>Max allowed options for end user:
+      <input type="number" name="max_candidates" placeholder="Write the max allowed options.." />
+    </label>
+  </div>
+  <div>
+    <label>Add a Vakant option for the max allowed votes:
+      <input type="checkbox" name="vacant" />
+    </label>
+  </div>
+
+  <div class="TextBoxesGroup">
+    <div>
+      <label>Option #1:
+        <input type="textbox" name="textbox[]" placeholder="Write an option.." />
+      </label>
+    </div>
+    <div>
+      <label>Option #2:
+        <input type="textbox" name="textbox[]" placeholder="Write an option.." />
+      </label>
+    </div>
+  </div>
+  <div>
+    <button id="addButton">+</button>
+    <button id="removeButton">-</button>
+  </div>
+
+  <button>Submit Vote</button>
 </form>
-<br>
+
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
 <script src="/admin.js"></script>

@@ -6,13 +6,12 @@
   There is no election at the time, try again later.
 <%} else if (CURRENT_STATE == POSSIBLE_STATES.vote){ %>
   <h1>Voting session open</h1>
- Vote nr: <%= sessionNumber + 1 %>
- Time left:<span id="timeleft"><%= vote.timeLeft %></span> in sek
- <input type="hidden" id="maximumNbrOfVotes" value="<%= vote.maximumNbrOfVotes %>">
- <br>
- You have <span id="votesleft"><%= vote.maximumNbrOfVotes %></span> votes left
+  Time left: <span id="timeleft"><%= vote.timeLeft %></span> in sek
+  <input type="hidden" id="maximumNbrOfVotes" value="<%= vote.maximumNbrOfVotes %>">
+  <br>
+  You have <span id="votesleft"><%= vote.maximumNbrOfVotes %></span> votes left
 
-<form class="optionsform" action="vote" method="post" >
+<form class="optionsform" action="/vote" method="post" >
 
   <% vote.options.sort(function() { return .5 - Math.random() }).concat(vote.vacantOptions).forEach(function(option)  { %>
 
@@ -23,8 +22,8 @@
     <br>
 
   <% }) %>
-   your code on your papper:<input name="code" />
-  <input type="submit" value="Submit">
+   Code for current voting session (num <%= sessionNumber + 1 %>): <input name="code" />
+   <input type="submit" value="Submit">
 
 
   </form>
