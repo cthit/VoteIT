@@ -60,10 +60,35 @@ VoteManager.prototype.allVotesUnique = function(vote) {
 
 VoteManager.prototype.checkIfAllCandidatesInVoteAreValid = function(vote) {
     var that = this;
-    return vote.every(function(v) {
+
+    return isVacantVotesInIncreasingIndex(vote, this.voteCount) && vote.every(function(v) {
         return that.voteCount[v] !== undefined;
     });
 };
+
+function isVacantVotesInIncreasingIndex(vote, voteCount) {
+    var vacantIndexes = Object.keys(voteCount).filter(function(key) {
+        return voteCount[key].item.vacant === true;
+    }).map(function(key){
+        return voteCount[key].item.index;
+    }).sort();
+
+
+    var currIndex;
+    while(currIndex = vacantIndexes.pop()) {
+        if(vote.indexOf(currIndex) !== -1) {
+            var test = vacantIndexes.filter(function(i) {
+                return i < currIndex;
+            }).every(function(li) {
+                return vote.indexOf(li) !== -1;
+            });
+            if (!test) {
+                return false;
+            }
+        }
+    }
+    return true;
+}
 
 VoteManager.prototype.increaseVoteForCandidate = function(candidateIndex) {
     this.voteCount[candidateIndex].value++;

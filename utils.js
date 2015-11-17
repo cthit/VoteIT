@@ -1,5 +1,5 @@
 var Random = require("random-js"); // uses the nativeMath engine
-Random = Random(Random.engines.mt19937().autoSeed());
+var randomjs = Random(Random.engines.mt19937().autoSeed());
 
 var BASE58CHARS = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
 
@@ -8,12 +8,11 @@ function generateCodes(nbrOfUsers, nbrOfCodesPerUser, lengthOfCodes) {
     for (var i = 0; i < nbrOfCodesPerUser; i++) {
         var oneSessionCodes = [];
         for (var j = 0; j < nbrOfUsers; j++) {
-            var code = randomString(lengthOfCodes, BASE58CHARS);
-            if (oneSessionCodes.indexOf(code) === -1) {
-                oneSessionCodes.push(code);
-            } else {
-                j--;
-            }
+            var code;
+            do {
+                code = randomString(lengthOfCodes, BASE58CHARS);
+            } while (oneSessionCodes.indexOf(code) !== -1);
+            oneSessionCodes.push(code);
         }
         codes.push(oneSessionCodes);
     }
@@ -23,7 +22,7 @@ function generateCodes(nbrOfUsers, nbrOfCodesPerUser, lengthOfCodes) {
 function randomString(length, chars) {
     var result = '';
     for (var i = length; i > 0; --i) {
-        result += chars[Random.integer(0, chars.length - 1)];
+        result += chars[randomjs.integer(0, chars.length - 1)];
     }
     return result;
 }
@@ -40,7 +39,7 @@ Object.clone = function(obj) {
 
 
 Array.prototype.shuffle = function() {
-    Random.shuffle(this);
+    randomjs.shuffle(this);
     return this;
 };
 

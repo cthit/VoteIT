@@ -85,7 +85,7 @@ describe('VoteManager', function () {
         var vm = new VoteManager(candidates1, candidates2, 3);
 
         it('should increase the num of votes for candidate c', function () {
-            var vote = [1, 5];
+            var vote = [1, 4];
 
             var beforeObj = Object.clone(vm.voteCount);
 
@@ -96,7 +96,7 @@ describe('VoteManager', function () {
             expect(Object.keys(beforeObj)).toEqual(Object.keys(afterObj));
 
             Object.keys(beforeObj).forEach(function (key) {
-                if (key === '1' || key === '5') {
+                if (key === '1' || key === '4') {
                     expect(afterObj[key].value).toBe(beforeObj[key].value + 1);
                 } else {
                     expect(afterObj[key].value).toBe(beforeObj[key].value);
@@ -127,6 +127,63 @@ describe('VoteManager', function () {
             expect(function () {
                 vm.castVote(duplicateVotes);
             }).toThrow('Duplicate votes');
+
+            var afterObj = Object.clone(vm.voteCount);
+
+            expect(beforeObj).toEqual(afterObj);
+
+        });
+
+        it('should throw if trying to vote when voting closed', function() {
+            var vm = new VoteManager(candidates1, candidates2, 4);
+            var beforeObj = Object.clone(vm.voteCount);
+
+            var vote = [1];
+
+            expect(vm.isOpen).toBe(true);
+            vm.closeVotingSession();
+            expect(vm.isOpen).toBe(false);
+
+            expect(function() {
+                vm.castVote(vote);
+            }).toThrow('Voting is closed');
+
+            var afterObj = Object.clone(vm.voteCount);
+
+            expect(beforeObj).toEqual(afterObj);
+        });
+
+        it('should allow blank vote', function () {
+            var beforeObj = Object.clone(vm.voteCount);
+
+            var blankVote = [];
+
+            expect(function () {
+                vm.castVote(blankVote);
+            }).not.toThrow();
+
+
+            var afterObj = Object.clone(vm.voteCount);
+
+            expect(beforeObj).toEqual(afterObj);
+
+        });
+
+        it('should allow number of votes less than max', function() {
+            expect(function() {
+                var votes = [1, 2];
+                vm.castVote(votes);
+            }).not.toThrow();
+        });
+
+        it('should not allow voting for vacant2 if vacant1 is not voted for', function () {
+            var beforeObj = Object.clone(vm.voteCount);
+
+            var invalidVacantVote = [1, 5];
+
+            expect(function () {
+                vm.castVote(invalidVacantVote);
+            }).toThrow('Invalid option voted for');
 
             var afterObj = Object.clone(vm.voteCount);
 
