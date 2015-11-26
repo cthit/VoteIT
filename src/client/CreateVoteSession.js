@@ -77,7 +77,7 @@ var CreateVoteSession = React.createClass({
             <div className="vote-session-form">
                 <h1>Create Vote Session</h1>
                 <div className="form-group">
-                    <label htmlFor="max_candidates">Max votes per user:</label>
+                    <label htmlFor="max_candidates">Max selections per vote:</label>
                     <input type="number" autofocus min={0} id="max_candidates" onChange={this.changeMaxCandidates} value={maxCandidates} placeholder="Write the max allowed options.." />
                 </div>
                 <div className="form-group">
