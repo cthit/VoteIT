@@ -56,7 +56,7 @@ var User = React.createClass({
 
     },
     renderActiveSession() {
-        let { candidates, sessionNumber } = this.state;
+        let { candidates, sessionNumber, codeLength } = this.state;
         let numFields = 4;
         let maxLength = codeLength / numFields;
         return (
