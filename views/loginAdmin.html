@@ -1,6 +1,10 @@
+<% include _head.ejs %>
+
 <h1>Login admin</h1>
 
 <form action="/login" method="post">
-  <input type="password" name="pass"/>
+  <input type="password" name="pass" autofocus />
   <input type="submit" value="Submit">
 </form>
+
+<% include _footer.ejs %>

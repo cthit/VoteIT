@@ -1,6 +1,6 @@
 jest.autoMockOff();
 
-var VoteSessionFactory = require('../voteSessionFactory');
+var VoteSessionFactory = require('../src/voteSessionFactory');
 
 describe('voteSessionFactory', function() {
 

@@ -1,6 +1,6 @@
 jest.autoMockOff();
 
-var VoteManager = require('../voteManager');
+var VoteManager = require('../src/voteManager');
 
 describe('VoteManager', function () {
 

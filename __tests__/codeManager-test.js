@@ -1,8 +1,8 @@
 jest.autoMockOff();
 
-require("../utils");
+require("../src/utils");
 
-var CodeManager = require("../codeManager");
+var CodeManager = require("../src/codeManager");
 
 describe("CodeManager", function() {
     describe("nextSession", function() {

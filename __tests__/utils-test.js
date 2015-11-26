@@ -1,6 +1,6 @@
 jest.autoMockOff();
 
-require('../utils');
+require('../src/utils');
 
 
 describe('Array', function() {

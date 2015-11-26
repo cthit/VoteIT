@@ -1,31 +1,25 @@
-<link rel="stylesheet" type="text/css" href="/print.css">
+<% include _head.ejs %>
 
-<form action="/createVoteSession" method="post">
-  <div>
-    <label>Max Time(sec):
-      <input type="number" name="maxtime" value="600" placeholder="Write the max time for the vote in minutes" />
-    </label>
-  </div>
-  <div>
+<form action="/createVoteSession" class="admin-form" method="post">
+  <div class="form-group">
     <label>Max allowed options for end user:
-      <input type="number" name="max_candidates" placeholder="Write the max allowed options.." />
+      <input type="number" autofocus name="max_candidates" placeholder="Write the max allowed options.." />
     </label>
   </div>
-  <div>
+  <div class="form-group">
     <label>Add a Vakant option for the max allowed votes:
       <input type="checkbox" name="vacant" />
     </label>
   </div>
-
   <div class="TextBoxesGroup">
-    <div>
+    <div class="form-group">
       <label>Option #1:
-        <input type="textbox" name="textbox[]" placeholder="Write an option.." />
+        <input type="text" name="textbox[]" placeholder="Write an option.." />
       </label>
     </div>
-    <div>
+    <div class="form-group">
       <label>Option #2:
-        <input type="textbox" name="textbox[]" placeholder="Write an option.." />
+        <input type="text" name="textbox[]" placeholder="Write an option.." />
       </label>
     </div>
   </div>
@@ -39,3 +33,5 @@
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
 <script src="/admin.js"></script>
+
+<% include _footer.ejs %>

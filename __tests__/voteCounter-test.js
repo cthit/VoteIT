@@ -1,6 +1,6 @@
 jest.autoMockOff();
 
-var VoteCounter = require("../voteCounter");
+var VoteCounter = require("../src/voteCounter");
 
 describe('voteCounter', function() {
     describe('moveFromArrayUntilLength', function() {

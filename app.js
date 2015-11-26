@@ -1,11 +1,11 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
-var utils = require('./utils.js');
-var VoteSessionFactory = require('./voteSessionFactory');
-var VoteManager = require('./voteManager');
-var CodeManager = require('./codeManager');
-var VoteCounter = require('./voteCounter');
+var utils = require('./src/utils.js');
+var VoteSessionFactory = require('./src/voteSessionFactory');
+var VoteManager = require('./src/voteManager');
+var CodeManager = require('./src/codeManager');
+var VoteCounter = require('./src/voteCounter');
 var app = express();
 
 var currentCountDown;
@@ -49,14 +49,36 @@ app.locals.POSSIBLE_STATES = POSSIBLE_STATES;
 app.locals.CURRENT_STATE = POSSIBLE_STATES.noVote;
 
 app.get('/', function(req, res) {
-    res.render('frontend.html', {
-        vote: vote,
-        sessionNumber: codeManager.currentSession
-    });
+    res.render('index.html');
+    //res.json({
+    //    title: '',
+    //    vote: vote,
+    //    lengthOfCodes: conf.lengthOfCodes,
+    //    sessionNumber: codeManager.currentSession
+    //});
+});
+
+app.get('/status', function(req, res) {
+    if (!voteManager) {
+        res.json({
+            sessionNumber: codeManager.currentSession,
+            votingOpened: false
+        }).end();
+    } else {
+        res.json({
+            sessionNumber: codeManager.currentSession,
+            votingOpened: voteManager.isOpen,
+            candidates: vote.options,
+            vacants: vote.vacantOptions,
+            codeLength: conf.lengthOfCodes
+        }).end();
+    }
 });
 
 app.get('/login', function(req, res) {
-    res.render('loginAdmin.html');
+    res.render('loginAdmin.html', {
+        title: 'Login'
+    });
 });
 
 app.post('/login', function(req, res) {
@@ -72,33 +94,42 @@ app.post('/login', function(req, res) {
 });
 
 app.post('/vote', function(req, res) {
-    var vote = req.body.vote;
+    var voteData = req.body.vote;
     var code = req.body.code;
 
     try {
+        if (vote.state !== POSSIBLE_STATES.vote) {
+            throw 'Voting is closed';
+        }
+
         if (!codeManager.isValidCode(code)) {
             throw 'Invalid code';
         }
 
-        codes = voteManager.castVote(vote, code, sessionCodes);
+        codes = voteManager.castVote(voteData, code, sessionCodes);
 
         codeManager.invalidateCode(code);
     } catch (e) {
-        res.send('FAIL: ' + e);
+        res.status(400).send('FAIL: ' + e);
     }
 });
 
 app.get('/admin', function(req, res) {
-    if (req.cookies.password != conf.pass) {
-        res.redirect('/login');
+    var password = req.password;
+    if (password != conf.pass) {
+        res.status(403).send('');
     } else {
-        res.render('admin.html');
+        res.render('admin.html', {
+            title: 'Admin',
+            votingIsOpen: voteManager && voteManager.isOpen
+        });
     }
 });
 
 app.get('/admin/print', function(req, res) {
-    if (req.cookies.password != conf.pass) {
-        res.redirect('/login');
+    var password = req.password;
+    if (password != conf.pass) {
+        res.status(401).end();
     } else {
         var codes = codeManager.generateCodes(conf.users, conf.nbrOfCodesPerUser, conf.lengthOfCodes);
 
@@ -109,26 +140,32 @@ app.get('/admin/print', function(req, res) {
 });
 
 app.get('/createVoteSession', function(req, res) {
-    res.render('createVoteSession.html');
+    res.render('createVoteSession.html', {
+        title: 'Create vote session'
+    });
 });
 
 app.post('/createVoteSession', function(req, res) {
-    app.locals.CURRENT_STATE = POSSIBLE_STATES.vote;
-    codeManager.nextSession();
+    var password = req.password;
+    if (password != conf.pass) {
+        res.status(401).end();
+    } else {
+        app.locals.CURRENT_STATE = POSSIBLE_STATES.vote;
+        codeManager.nextSession();
 
-    var candidates = req.body.textbox;
-    var vacantEnabled = req.body.vacant == 'on';
-    var maxCandidates = req.body.max_candidates;
-    var maxTimeInSeconds = req.body.maxtime;
+        var candidates = req.body.candidates;
+        var vacantEnabled = req.body.vacant;
+        var maxCandidates = req.body.max_candidates;
+        var maxTimeInSeconds = req.body.maxtime;
 
-    vote = VoteSessionFactory.createVoteSession(candidates, vacantEnabled, maxCandidates, maxTimeInSeconds);
+        vote = VoteSessionFactory.createVoteSession(candidates, vacantEnabled, maxCandidates, maxTimeInSeconds);
 
-    voteManager = new VoteManager(vote.options,
-                                  vote.vacantOptions,
-                                  vote.maximumNbrOfVotes);
-
+        voteManager = new VoteManager(vote.options,
+                                      vote.vacantOptions,
+                                      vote.maximumNbrOfVotes);
+    }
     res.redirect('/admin');
-    currentCountDown = setInterval(countDown, 1000);
+
 });
 
 function countDown() {
