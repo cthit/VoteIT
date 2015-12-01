@@ -23,7 +23,7 @@ var User = React.createClass({
                candidates: status.candidates || [],
                vacants: status.vacants || [],
                codeLength: status.codeLength || 0
-           })
+           });
         });
     },
     handleCandidateClicked(id) {

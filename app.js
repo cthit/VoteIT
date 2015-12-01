@@ -19,10 +19,11 @@ app.set('password', (process.env.PASSWORD || 'admin'));
 var vote = {};
 var voteManager = null;
 var codeManager = new CodeManager();
+var adminToken = null;
 
 var conf = {
     pass: app.get('password'),
-    users: 5,
+    users: 20,
     lengthOfCodes: 12,
     nbrOfCodesPerUser: 20
 };
@@ -45,17 +46,20 @@ var POSSIBLE_STATES = {
     result: "result"
 };
 
+function isAuthenticated(req, res) {
+    var token = req.header('Authorization').substring(6);
+    if (adminToken === null || token !== adminToken) {
+        res.statusCode(401).end();
+        return false;
+    }
+    return true;
+}
+
 app.locals.POSSIBLE_STATES = POSSIBLE_STATES;
 app.locals.CURRENT_STATE = POSSIBLE_STATES.noVote;
 
 app.get('/', function(req, res) {
     res.render('index.html');
-    //res.json({
-    //    title: '',
-    //    vote: vote,
-    //    lengthOfCodes: conf.lengthOfCodes,
-    //    sessionNumber: codeManager.currentSession
-    //});
 });
 
 app.get('/status', function(req, res) {
@@ -75,21 +79,14 @@ app.get('/status', function(req, res) {
     }
 });
 
-app.get('/login', function(req, res) {
-    res.render('loginAdmin.html', {
-        title: 'Login'
-    });
-});
-
 app.post('/login', function(req, res) {
-    if (req.body.pass == conf.pass) {
-        res.cookie('password', req.body.pass, {
-            maxAge: 900000,
-            httpOnly: false
-        });
-        res.redirect('/admin');
+    if (req.body.pass === conf.pass) {
+        adminToken = utils.randomToken(30);
+        res
+            .set('Authorization', 'token ' + adminToken)
+            .end();
     } else {
-        res.send('Invalid login credentials');
+        res.status(403).end();
     }
 });
 
@@ -114,46 +111,23 @@ app.post('/vote', function(req, res) {
     }
 });
 
-app.get('/admin', function(req, res) {
-    var password = req.password;
-    if (password != conf.pass) {
-        res.status(403).send('');
-    } else {
-        res.render('admin.html', {
-            title: 'Admin',
-            votingIsOpen: voteManager && voteManager.isOpen
-        });
-    }
-});
-
 app.get('/admin/print', function(req, res) {
-    var password = req.password;
-    if (password != conf.pass) {
-        res.status(401).end();
-    } else {
+    if (isAuthenticated(req, res)) {
         var codes = codeManager.generateCodes(conf.users, conf.nbrOfCodesPerUser, conf.lengthOfCodes);
 
-        res.render('print.html', {
+        res.json({
             codes: codes.transpose()
-        });
+        }).end();
     }
-});
-
-app.get('/createVoteSession', function(req, res) {
-    res.render('createVoteSession.html', {
-        title: 'Create vote session'
-    });
 });
 
 app.post('/createVoteSession', function(req, res) {
-    var password = req.password;
-    if (password != conf.pass) {
-        res.status(401).end();
-    } else {
+    if (isAuthenticated(req, res)) {
         app.locals.CURRENT_STATE = POSSIBLE_STATES.vote;
-        codeManager.nextSession();
 
+        codeManager.nextSession();
         var candidates = req.body.candidates;
+
         var vacantEnabled = req.body.vacant;
         var maxCandidates = req.body.max_candidates;
         var maxTimeInSeconds = req.body.maxtime;
@@ -164,8 +138,6 @@ app.post('/createVoteSession', function(req, res) {
                                       vote.vacantOptions,
                                       vote.maximumNbrOfVotes);
     }
-    res.redirect('/admin');
-
 });
 
 function countDown() {
