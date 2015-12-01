@@ -6,12 +6,19 @@ var CandidateList = require('./CandidateList');
 
 var server = require('./backend');
 
+const POSSIBLE_STATES = {
+    noVote: "noVote",
+    vote: "vote",
+    result: "result"
+};
+
 var User = React.createClass({
     getInitialState() {
         return {
             sessionNumber: 0,
-            isOpen: false,
-            isCompleted: false,
+            maximumNbrOfVotes: 0,
+            lowestVacantIndex: 0,
+            voteState: POSSIBLE_STATES.noVote,
             candidates: [],
             vacants: [],
             winners: []
@@ -27,13 +34,45 @@ var User = React.createClass({
         fetch('/status').then(res => res.json()).then(status => {
             this.setState({
                 sessionNumber: status.sessionNumber,
-                isOpen: status.votingOpened,
-                isCompleted: status.votingCompleted,
+                maximumNbrOfVotes: status.maximumNbrOfVotes,
+                voteState: status.state,
                 winners: status.winners || [],
                 candidates: status.candidates || [],
+                lowestVacantIndex: status.vacants[0] && status.vacants[0].id,
                 vacants: status.vacants || [],
                 codeLength: status.codeLength || 0
             });
+        });
+    },
+    handleVacantClicked(id) {
+        let lowestVacantIndex = this.state.lowestVacantIndex;
+
+        var vacants = this.state.vacants.map((cand) => {
+            if (cand.id === id) {
+                let active = !cand.active;
+                lowestVacantIndex = active ? id + 1 : id;
+
+                return {
+                    id: cand.id,
+                    name: cand.name,
+                    vacant: cand.vacant,
+                    active
+                };
+            } else if (cand.id > id) {
+                return {
+                    id: cand.id,
+                    name: cand.name,
+                    vacant: cand.vacant,
+                    active: false
+                }
+            } else {
+                return cand;
+            }
+        });
+
+        this.setState({
+            vacants,
+            lowestVacantIndex
         });
     },
     handleCandidateClicked(id) {
@@ -54,10 +93,13 @@ var User = React.createClass({
             candidates
         });
     },
+    getCheckedCandidates() {
+        return this.state.candidates.concat(this.state.vacants).filter(c => c.active);
+    },
     handleVoteSubmit() {
         let code = this.codeFields.getCode();
 
-        let vote = this.state.candidates.filter(c => c.active).map(c => c.id);
+        let vote = this.getCheckedCandidates().map(c => c.id);
 
         server.postJSON('/vote', { code, vote })
             .then((res) => {
@@ -66,18 +108,20 @@ var User = React.createClass({
 
     },
     renderActiveSession() {
-        let { candidates, sessionNumber, codeLength, isCompleted } = this.state;
+        let { candidates, vacants, sessionNumber, maximumNbrOfVotes, codeLength, lowestVacantIndex } = this.state;
 
-        if (isCompleted) {
-            return this.renderWinners();
-        }
+        let numVotesLeft = maximumNbrOfVotes - this.getCheckedCandidates().length;
 
-        let numFields = 4;
+        let numFields = 3;
         let maxLength = codeLength / numFields;
         return (
             <div className="voting-components">
-                <h1 className="vote-header">Vote #{sessionNumber + 1}</h1>
-                <CandidateList candidates={candidates} candidateClicked={this.handleCandidateClicked} />
+                <div className="vote-header">
+                    <div className="left">Vote #{sessionNumber + 1}</div>
+                    <div className="right">Selections left: {' ' + numVotesLeft}</div>
+                </div>
+                <CandidateList candidates={candidates} numVotesLeft={numVotesLeft} lowestVacantIndex={lowestVacantIndex} candidateClicked={this.handleCandidateClicked} />
+                <CandidateList candidates={vacants} numVotesLeft={numVotesLeft} lowestVacantIndex={lowestVacantIndex} candidateClicked={this.handleVacantClicked} />
                 <div>
                     <h1 className="vote-header">Code</h1>
                     <CodeInput fields={numFields} maxLen={maxLength} ref={(c) => this.codeFields = c} />
@@ -87,12 +131,13 @@ var User = React.createClass({
         );
     },
     renderWinners() {
-        let { winners } = this.state; // Randomize order
+        let { winners } = this.state;
         return (
             <div className="winners">
+                <h1>Winners</h1>
                 <ul>
-                    {winners.map(winner => (
-                        <li>{winner.name}</li>
+                    {winners.map((winner, i) => (
+                        <li key={i}>{winner.name}</li>
                     ))}
                 </ul>
             </div>
@@ -107,11 +152,29 @@ var User = React.createClass({
         );
     },
     render() {
-        var { isOpen } = this.state;
+        var { voteState } = this.state;
+
+        var renderFunction = null;
+        let mainBoxClass = 'active-session';
+
+        switch (voteState) {
+            case POSSIBLE_STATES.noVote:
+                renderFunction = this.renderNoSession;
+                mainBoxClass = 'no-active-session';
+                break;
+            case POSSIBLE_STATES.vote:
+                renderFunction = this.renderActiveSession;
+                break;
+            case POSSIBLE_STATES.result:
+                renderFunction = this.renderWinners;
+                break;
+            default:
+                console.error('Unhandled state', voteState);
+        }
 
         return (
-            <div className={'main-box ' + (isOpen ? 'active-session' : 'no-active-session')}>
-                {isOpen ? this.renderActiveSession() : this.renderNoSession()}
+            <div className={'main-box ' + mainBoxClass}>
+                {renderFunction && renderFunction()}
             </div>
         );
     }

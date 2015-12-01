@@ -9,13 +9,18 @@ var { getJSON, postJSON } = require('./backend');
 
 const TOKEN_KEY = 'token';
 
+const POSSIBLE_STATES = {
+    noVote: "noVote",
+    vote: "vote",
+    result: "result"
+};
+
 var Admin = React.createClass({
     getInitialState() {
         return {
             signedIn: Boolean(window.sessionStorage.getItem(TOKEN_KEY)),
             codes: [],
-            ongoingVote: false,
-            voteCompleted: false,
+            voteState: POSSIBLE_STATES.noVote,
             error: false
         };
     },
@@ -25,8 +30,8 @@ var Admin = React.createClass({
     getServerStatus() {
         fetch('/status').then(res => res.json()).then(status => {
             this.setState({
-                ongoingVote: status.votingOpened,
-                voteCompleted: status.votingCompleted
+                codesGenerated: status.codesGenerated,
+                voteState: status.state
             });
         });
     },
@@ -59,7 +64,7 @@ var Admin = React.createClass({
         });
     },
     confirmOpenPrintPage() {
-        if (!this.state.ongoingVote || confirm('Really generate new codes?')) {
+        if (!this.state.codesGenerated || confirm('Really generate new codes?')) {
             getJSON('/admin/print').then(data => {
                 this.setState({showPrint: true, codes: data.codes});
             }, (err) => {
@@ -70,9 +75,10 @@ var Admin = React.createClass({
         }
     },
     confirmEndVote() {
-        if (this.state.ongoingVote && confirm('Really end voting session?')) {
+        if (this.state.voteState === POSSIBLE_STATES.vote && confirm('Really end voting session?')) {
             postJSON('/admin/complete', {}).then(() => {
-                this.history.replaceState(null, '/');
+                this.getServerStatus();
+                this.props.history.replaceState(null, '/');
             }, (err) => {
                 if (err.status === 401) {
                     this.clearToken();
@@ -81,6 +87,7 @@ var Admin = React.createClass({
         }
     },
     renderPrintPage(codes) {
+        this.getServerStatus();
         return (
             <Popout title="Print codes" url="/print.html" onClosing={this.setState({showPrint: false, codes: []})}>
                 <PrintPage codes={codes} />
@@ -88,22 +95,20 @@ var Admin = React.createClass({
         );
     },
     render() {
-        let { signedIn, error, ongoingVote, voteCompleted, showPrint, codes } = this.state;
+        let { signedIn, error, codesGenerated, voteState, showPrint, codes } = this.state;
 
+        let voteInProgress = voteState === POSSIBLE_STATES.vote;
 
         if (signedIn) {
             return (
                 <div>
-                    <Button className="large red" onClick={this.confirmOpenPrintPage}>Generate and print new codes</Button>
-                    {ongoingVote && !voteCompleted ?
-                        <Button className="large red" onClick={this.confirmEndVote}>End ongoing vote</Button>
-                        :
-                        <Button className="large"
+                    {voteInProgress && <Button className="large red" onClick={this.confirmEndVote}>End ongoing vote</Button>}
+                    {!voteInProgress && <Button className="large red" onClick={this.confirmOpenPrintPage}>Generate and print new codes</Button>}
+                    {!voteInProgress && <Button className="large"
                                 onClick={() => this.props.history.pushState(null, '/admin/createVoteSession')}>
                             Create new voting session
-                        </Button>
-                    }
-                    <Button onClick={this.clearToken}>Sign out</Button>
+                        </Button>}
+                    <Button className="small" onClick={this.clearToken}>Sign out</Button>
                     {showPrint && this.renderPrintPage(codes)}
                 </div>
             );

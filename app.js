@@ -10,7 +10,8 @@ var app = express();
 
 app.set('port', (process.env.PORT || 5000));
 app.set('password', (process.env.PASSWORD || 'admin'));
-
+app.set('users', parseInt(process.env.NUM_USERS || 20, 10));
+app.set('codesPerUser', parseInt(process.env.CODES_PER_USER || 20, 10));
 
 
 var vote = {};
@@ -20,9 +21,9 @@ var adminToken = null;
 
 var conf = {
     pass: app.get('password'),
-    users: 20,
-    lengthOfCodes: 12,
-    nbrOfCodesPerUser: 20
+    users: app.get('users'),
+    lengthOfCodes: 3,
+    nbrOfCodesPerUser: app.get('codesPerUser')
 };
 
 var codes = [];
@@ -69,16 +70,17 @@ app.get('/status', function(req, res) {
         case POSSIBLE_STATES.noVote:
             res.json({
                 sessionNumber: codeManager.currentSession,
-                votingOpened: false,
-                votingComplete: false
+                state: app.locals.CURRENT_STATE,
+                codesGenerated: codeManager.codesGenerated
             });
             break;
         case POSSIBLE_STATES.vote:
             res.json({
                 sessionNumber: codeManager.currentSession,
-                votingOpened: true,
-                votingComplete: false,
-                candidates: vote.options,
+                state: app.locals.CURRENT_STATE,
+                maximumNbrOfVotes: vote.maximumNbrOfVotes,
+                codesGenerated: codeManager.codesGenerated,
+                candidates: vote.options.shuffle(),
                 vacants: vote.vacantOptions,
                 codeLength: conf.lengthOfCodes
             });
@@ -86,9 +88,9 @@ app.get('/status', function(req, res) {
         case POSSIBLE_STATES.result:
             res.json({
                 sessionNumber: codeManager.currentSession,
-                votingOpened: true,
-                votingComplete: true,
-                winners: vote.winners
+                state: app.locals.CURRENT_STATE,
+                codesGenerated: codeManager.codesGenerated,
+                winners: vote.winners.shuffle()
             });
     }
     res.end();
@@ -110,7 +112,7 @@ app.post('/vote', function(req, res) {
     var code = req.body.code;
 
     try {
-        if (vote.state !== POSSIBLE_STATES.vote) {
+        if (app.locals.CURRENT_STATE !== POSSIBLE_STATES.vote) {
             throw 'Voting is closed';
         }
 
@@ -118,12 +120,14 @@ app.post('/vote', function(req, res) {
             throw 'Invalid code';
         }
 
-        codes = voteManager.castVote(voteData, code, sessionCodes);
+        voteManager.castVote(voteData);
 
         codeManager.invalidateCode(code);
     } catch (e) {
         res.status(400).send('FAIL: ' + e);
     }
+
+    res.end();
 });
 
 app.get('/admin/print', function(req, res) {
@@ -161,6 +165,8 @@ app.post('/admin/complete', function(req, res) {
         var votesCount = voteManager.closeVotingSession();
         vote.winners = VoteCounter.countVotes(votesCount, vote.maximumNbrOfVotes);
         app.locals.CURRENT_STATE = POSSIBLE_STATES.result;
+
+        res.end();
     }
 });
 

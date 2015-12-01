@@ -5,8 +5,8 @@ var VoteManager = require('../src/voteManager');
 describe('VoteManager', function () {
 
     describe('createEmptyVoteResults', function () {
-        var candidates1 = [{index: 1}, {index: 2}, {index: 3}];
-        var candidates2 = [{index: 4}, {index: 5}, {index: 6}];
+        var candidates1 = [{id: 1}, {id: 2}, {id: 3}];
+        var candidates2 = [{id: 4}, {id: 5}, {id: 6}];
         var votesCount = new VoteManager(candidates1, candidates2).voteCount;
 
         it('should create a list with the length of the sum of the lengths passed in', function () {
@@ -22,8 +22,8 @@ describe('VoteManager', function () {
 
     describe('checkIfAllCandidatesInVoteAreValid', function () {
 
-        var candidates1 = [{index: 1}, {index: 2}, {index: 3}];
-        var candidates2 = [{index: 4}, {index: 5}, {index: 6}];
+        var candidates1 = [{id: 1}, {id: 2}, {id: 3}];
+        var candidates2 = [{id: 4}, {id: 5}, {id: 6}];
         var vm = new VoteManager(candidates1, candidates2, 3);
 
         it('should return true with defined indices', function () {
@@ -37,8 +37,8 @@ describe('VoteManager', function () {
 
     describe('increaseVoteForCandidate', function () {
 
-        var candidates1 = [{index: 1}, {index: 2}, {index: 3}];
-        var candidates2 = [{index: 4}, {index: 5}, {index: 6}];
+        var candidates1 = [{id: 1}, {id: 2}, {id: 3}];
+        var candidates2 = [{id: 4}, {id: 5}, {id: 6}];
         var vm = new VoteManager(candidates1, candidates2, 3);
 
         it('should increase the num of votes for candidate c and only c', function () {
@@ -71,15 +71,15 @@ describe('VoteManager', function () {
     describe('castVote', function () {
 
         var candidates1 = [
-            {index: 1, name: 'Ada', vacant: false},
-            {index: 2, name: 'Haskell', vacant: false},
-            {index: 3, name: 'Erlang', vacant: false}
+            {id: 1, name: 'Ada', vacant: false},
+            {id: 2, name: 'Haskell', vacant: false},
+            {id: 3, name: 'Erlang', vacant: false}
         ];
 
         var candidates2 = [
-            {index: 4, name: 'Vakant1', vacant: true},
-            {index: 5, name: 'Vakant2', vacant: true},
-            {index: 6, name: 'Vakant3', vacant: true}
+            {id: 4, name: 'Vakant1', vacant: true},
+            {id: 5, name: 'Vakant2', vacant: true},
+            {id: 6, name: 'Vakant3', vacant: true}
         ];
 
         var vm = new VoteManager(candidates1, candidates2, 3);

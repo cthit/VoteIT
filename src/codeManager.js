@@ -3,6 +3,7 @@ var utils = require("./utils");
 function CodeManager() {
     this.codes = [];
     this.currentSession = -1;
+    this.codesGenerated = false;
 }
 
 CodeManager.prototype.nextSession = function() {
@@ -17,6 +18,7 @@ CodeManager.prototype.nextSession = function() {
 };
 
 CodeManager.prototype.generateCodes = function(nbrOfUsers, nbrOfCodesPerUser, lengthOfCodes) {
+    this.codesGenerated = true;
     return this.codes = utils.generateCodes(nbrOfUsers, nbrOfCodesPerUser, lengthOfCodes);
 };
 

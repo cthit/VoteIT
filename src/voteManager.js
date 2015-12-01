@@ -8,13 +8,17 @@ function VoteManager(candidates, vacantCandidates, maximumNbrOfVotes) {
 
 VoteManager.prototype.closeVotingSession = function() {
     this.isOpen = false;
-    return this.voteCount;
+    var that = this;
+
+    return Object.keys(that.voteCount).map(function(k) {
+        return that.voteCount[k];
+    });
 };
 
 function createEmptyVoteResults(candidates, vacantCandidates) {
     var voteCount = {};
     candidates.concat(vacantCandidates).forEach(function(candidate) {
-        voteCount[candidate.index] = {
+        voteCount[candidate.id] = {
             value: 0,
             item: candidate
         };
@@ -70,7 +74,7 @@ function isVacantVotesInIncreasingIndex(vote, voteCount) {
     var vacantIndexes = Object.keys(voteCount).filter(function(key) {
         return voteCount[key].item.vacant === true;
     }).map(function(key){
-        return voteCount[key].item.index;
+        return voteCount[key].item.id;
     }).sort();
 
 

@@ -1,6 +1,7 @@
 var React = require('react');
 var _ = require('lodash');
 
+const formatCode = code => _.chunk(code, 4).map(c => c.join('')).join('-');
 
 const PrintPage = ({ codes }) => (
     <div className="print-wrapper">
@@ -12,7 +13,7 @@ const PrintPage = ({ codes }) => (
                             {userCodes.map((code, index) => (
                                 <tr key={index}>
                                     <td className="index">{index + 1}</td>
-                                    <td className="code">{code}</td>
+                                    <td className="code">{formatCode(code)}</td>
                                 </tr>
                             ))}
                         </tbody>

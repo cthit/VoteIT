@@ -34,7 +34,6 @@ html, body, #root {
 
 .main-box.no-active-session {
     min-width: 300px;
-    width: 70%;
     text-align: center;
 }
 
@@ -45,9 +44,31 @@ html, body, #root {
 
 .voting-components .vote-header {
     text-align: center;
+    margin: 0.5em;
 }
 .voting-components > div {
     margin: 1em 0 0;
+}
+.voting-components .right {
+    justify-content: flex-end;
+}
+.voting-components .right span {
+    margin-left: 0.3em;
+}
+
+.vote-header {
+    flex-direction: row;
+    font-size: 2em;
+}
+
+@media screen and (max-width: 800px) {
+    .vote-header { flex-direction: column; }
+    .vote-header > div, .vote-header .right { justify-content: center; }
+}
+
+.vote-header > div {
+    flex-direction: row;
+    flex: 1;
 }
 
 
@@ -100,10 +121,18 @@ html, body, #root {
      background: #2980b9;
 }
 
+.candidate.disabled {
+    background: #757575;
+}
+
 .button.large {
     margin: 1em;
     padding: 1em;
     font-size: 2em;
+}
+
+.button.small {
+    margin: 1em;
 }
 
 .button {
@@ -160,6 +189,26 @@ html, body, #root {
     margin: 0.5em 0;
     flex-direction: row;
     align-items: center;
+}
+.winners h1 {
+    text-align: center;
+}
+.winners ul {
+    list-style-type: none;
+    padding: 0;
+    flex-wrap: wrap;
+    flex-direction: row;
+    display: flex;
+    justify-content: center;
+}
+.winners li {
+    text-align: center;
+    font-size: 2em;
+    margin: 1em;
+    padding: 1em;
+    background: #4CAF50;
+    color: #fff;
+    flex-basis: 300px;
 }
 
 .form-group input, .form-group label {

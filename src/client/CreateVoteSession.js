@@ -58,6 +58,7 @@ var CreateVoteSession = React.createClass({
             vacant: allowVacants,
             max_candidates: maxCandidates
         }).then((res) => {
+            this.props.history.replaceState(null, '/admin');
             console.log(res);
         })
     },
