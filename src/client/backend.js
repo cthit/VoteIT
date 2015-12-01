@@ -8,27 +8,29 @@ const getAuthorizationField = () => {
     }
 };
 
+const fetcher = (path, opts) => fetch(path, opts)
+    .then(resp => {
+        if (resp.ok) {
+            return resp;
+        } else {
+            throw resp;
+        }
+    })
 
-const getJSON = (path) => fetch(path, {
+
+const getJSON = (path) => fetcher(path, {
     headers: new Headers({
         'Authorization': getAuthorizationField()
     })
-}).then(res => res.json())
-  .catch((err) => {
-    console.error(err);
-    throw err;
-});
+}).then(res => res.json());
 
-const postJSON = (path, data) => fetch(path, {
+const postJSON = (path, data) => fetcher(path, {
     method: 'POST',
     body: JSON.stringify(data),
     headers: new Headers({
         'Content-Type': 'application/json',
         'Authorization': getAuthorizationField()
     })
-}).catch((err) => {
-    console.error(err);
-    throw err;
 });
 
 

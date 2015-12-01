@@ -20,7 +20,6 @@ function createVoteSession(candidateNames, vacantEnabled, maxCandidates, maxTime
     }
 
     return {
-        timeLeft: maxTimeInSeconds,
         options: candidates,
         vacantOptions: vacantCandidates,
         maximumNbrOfVotes: maxCandidates,

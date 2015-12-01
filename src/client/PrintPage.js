@@ -7,7 +7,7 @@ const PrintPage = ({ codes }) => (
         {_.chunk(codes, 8).map((codes8, index) => (
             <div key={index}>
                 {codes8.map((userCodes, index) => (
-                    <table className="code-table">
+                    <table className="code-table" key={index}>
                         <tbody>
                             {userCodes.map((code, index) => (
                                 <tr key={index}>

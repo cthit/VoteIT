@@ -13,14 +13,22 @@ var Admin = React.createClass({
     getInitialState() {
         return {
             signedIn: Boolean(window.sessionStorage.getItem(TOKEN_KEY)),
+            codes: [],
             ongoingVote: false,
+            voteCompleted: false,
             error: false
         };
     },
     componentWillMount() {
-        getJSON('/status').then(status => ({
-            ongoingVote: status.votingOpened
-        }));
+        this.getServerStatus();
+    },
+    getServerStatus() {
+        fetch('/status').then(res => res.json()).then(status => {
+            this.setState({
+                ongoingVote: status.votingOpened,
+                voteCompleted: status.votingCompleted
+            });
+        });
     },
     clearToken() {
         window.sessionStorage.removeItem(TOKEN_KEY);
@@ -50,11 +58,27 @@ var Admin = React.createClass({
             }
         });
     },
-    openPrintPage() {
-        getJSON('/admin/print').then(data => {
-
-            this.setState({showPrint: true, codes: data.codes});
-        });
+    confirmOpenPrintPage() {
+        if (!this.state.ongoingVote || confirm('Really generate new codes?')) {
+            getJSON('/admin/print').then(data => {
+                this.setState({showPrint: true, codes: data.codes});
+            }, (err) => {
+                if (err.status === 401) {
+                    this.clearToken();
+                }
+            });
+        }
+    },
+    confirmEndVote() {
+        if (this.state.ongoingVote && confirm('Really end voting session?')) {
+            postJSON('/admin/complete', {}).then(() => {
+                this.history.replaceState(null, '/');
+            }, (err) => {
+                if (err.status === 401) {
+                    this.clearToken();
+                }
+            });
+        }
     },
     renderPrintPage(codes) {
         return (
@@ -64,15 +88,15 @@ var Admin = React.createClass({
         );
     },
     render() {
-        let { signedIn, error, ongoingVote, showPrint, codes } = this.state;
+        let { signedIn, error, ongoingVote, voteCompleted, showPrint, codes } = this.state;
 
 
         if (signedIn) {
             return (
                 <div>
-                    <Button className="large" onClick={this.openPrintPage}>Generate and print new codes</Button>
-                    {ongoingVote ?
-                        <Button className="large">End ongoing vote</Button>
+                    <Button className="large red" onClick={this.confirmOpenPrintPage}>Generate and print new codes</Button>
+                    {ongoingVote && !voteCompleted ?
+                        <Button className="large red" onClick={this.confirmEndVote}>End ongoing vote</Button>
                         :
                         <Button className="large"
                                 onClick={() => this.props.history.pushState(null, '/admin/createVoteSession')}>

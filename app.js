@@ -8,9 +8,6 @@ var CodeManager = require('./src/codeManager');
 var VoteCounter = require('./src/voteCounter');
 var app = express();
 
-var currentCountDown;
-
-
 app.set('port', (process.env.PORT || 5000));
 app.set('password', (process.env.PASSWORD || 'admin'));
 
@@ -47,9 +44,10 @@ var POSSIBLE_STATES = {
 };
 
 function isAuthenticated(req, res) {
-    var token = req.header('Authorization').substring(6);
-    if (adminToken === null || token !== adminToken) {
-        res.statusCode(401).end();
+    var header = req.header('Authorization');
+
+    if (adminToken === null || header === null || header.substring(6) !== adminToken) {
+        res.status(401).end();
         return false;
     }
     return true;
@@ -62,21 +60,38 @@ app.get('/', function(req, res) {
     res.render('index.html');
 });
 
+app.get('/admin', function(req, res) {
+    res.redirect('/#/admin');
+});
+
 app.get('/status', function(req, res) {
-    if (!voteManager) {
-        res.json({
-            sessionNumber: codeManager.currentSession,
-            votingOpened: false
-        }).end();
-    } else {
-        res.json({
-            sessionNumber: codeManager.currentSession,
-            votingOpened: voteManager.isOpen,
-            candidates: vote.options,
-            vacants: vote.vacantOptions,
-            codeLength: conf.lengthOfCodes
-        }).end();
+    switch (app.locals.CURRENT_STATE) {
+        case POSSIBLE_STATES.noVote:
+            res.json({
+                sessionNumber: codeManager.currentSession,
+                votingOpened: false,
+                votingComplete: false
+            });
+            break;
+        case POSSIBLE_STATES.vote:
+            res.json({
+                sessionNumber: codeManager.currentSession,
+                votingOpened: true,
+                votingComplete: false,
+                candidates: vote.options,
+                vacants: vote.vacantOptions,
+                codeLength: conf.lengthOfCodes
+            });
+            break;
+        case POSSIBLE_STATES.result:
+            res.json({
+                sessionNumber: codeManager.currentSession,
+                votingOpened: true,
+                votingComplete: true,
+                winners: vote.winners
+            });
     }
+    res.end();
 });
 
 app.post('/login', function(req, res) {
@@ -126,33 +141,28 @@ app.post('/createVoteSession', function(req, res) {
         app.locals.CURRENT_STATE = POSSIBLE_STATES.vote;
 
         codeManager.nextSession();
-        var candidates = req.body.candidates;
+        var candidates = req.body.candidates.map(c => c.trim()).filter(c => c !== '');
 
         var vacantEnabled = req.body.vacant;
         var maxCandidates = req.body.max_candidates;
-        var maxTimeInSeconds = req.body.maxtime;
 
-        vote = VoteSessionFactory.createVoteSession(candidates, vacantEnabled, maxCandidates, maxTimeInSeconds);
+        vote = VoteSessionFactory.createVoteSession(candidates, vacantEnabled, maxCandidates);
 
         voteManager = new VoteManager(vote.options,
                                       vote.vacantOptions,
                                       vote.maximumNbrOfVotes);
+
+        res.end();
     }
 });
 
-function countDown() {
-    vote.timeLeft--;
-    if (vote.timeLeft == 0) {
-        countVotes();
-        clearInterval(currentCountDown);
+app.post('/admin/complete', function(req, res) {
+    if (isAuthenticated(req, res)) {
+        var votesCount = voteManager.closeVotingSession();
+        vote.winners = VoteCounter.countVotes(votesCount, vote.maximumNbrOfVotes);
+        app.locals.CURRENT_STATE = POSSIBLE_STATES.result;
     }
-}
-
-function countVotes() {
-    var votesCount = voteManager.closeVotingSession();
-    vote.winners = VoteCounter.countVotes(votesCount, vote.maximumNbrOfVotes);
-    app.locals.CURRENT_STATE = POSSIBLE_STATES.result;
-}
+});
 
 
 var server = app.listen(app.get('port'), function() {

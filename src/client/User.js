@@ -11,19 +11,29 @@ var User = React.createClass({
         return {
             sessionNumber: 0,
             isOpen: false,
+            isCompleted: false,
             candidates: [],
-            vacants: []
+            vacants: [],
+            winners: []
         }
     },
     componentWillMount() {
+        this.getServerStatus();
+        setInterval(() => {
+            this.getServerStatus();
+        }, 60000); // every minute
+    },
+    getServerStatus() {
         fetch('/status').then(res => res.json()).then(status => {
-           this.setState({
-               sessionNumber: status.sessionNumber,
-               isOpen: status.votingOpened,
-               candidates: status.candidates || [],
-               vacants: status.vacants || [],
-               codeLength: status.codeLength || 0
-           });
+            this.setState({
+                sessionNumber: status.sessionNumber,
+                isOpen: status.votingOpened,
+                isCompleted: status.votingCompleted,
+                winners: status.winners || [],
+                candidates: status.candidates || [],
+                vacants: status.vacants || [],
+                codeLength: status.codeLength || 0
+            });
         });
     },
     handleCandidateClicked(id) {
@@ -56,7 +66,12 @@ var User = React.createClass({
 
     },
     renderActiveSession() {
-        let { candidates, sessionNumber, codeLength } = this.state;
+        let { candidates, sessionNumber, codeLength, isCompleted } = this.state;
+
+        if (isCompleted) {
+            return this.renderWinners();
+        }
+
         let numFields = 4;
         let maxLength = codeLength / numFields;
         return (
@@ -71,10 +86,22 @@ var User = React.createClass({
             </div>
         );
     },
+    renderWinners() {
+        let { winners } = this.state; // Randomize order
+        return (
+            <div className="winners">
+                <ul>
+                    {winners.map(winner => (
+                        <li>{winner.name}</li>
+                    ))}
+                </ul>
+            </div>
+        )
+    },
     renderNoSession() {
         return (
             <div>
-                <h1><span className="red">No</span> voting session at the time</h1>
+                <h1><span className="danger">No</span> voting session at the time</h1>
                 There is no election at the time, try again later.
             </div>
         );

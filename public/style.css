@@ -119,13 +119,24 @@ html, body, #root {
     -ms-user-select: none;
 }
 
+.button.red {
+    background: #D32F2F;
+}
+
 .button:hover {
     background: #00838F;
+}
+.button.red:hover {
+    background: #C62828;
 }
 
 .button:active {
     background: #006064;
     box-shadow: 0 0 3px #888;
+}
+
+.button.red:active {
+    background: #B71C1C;
 }
 
 .multi-input {
@@ -178,6 +189,6 @@ h1 {
     color: #2c3e50;
 }
 
-.red {
+.danger {
     color: #e74c3c;
 }
