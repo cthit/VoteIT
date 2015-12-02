@@ -9,9 +9,8 @@ A voting system for student Division Meeting (Sektionsmöte).
 * Allows set amount of options to be accepted (eg, allow 3 options out of 5 to be accepted). So if the amount of allowed options is 2 and the options are "Agda", "Haskell" and "Erlang" both "Agda" and "Haskell" could be chosen. (personinval där en kommitté har limiterat antal platser)
 
 ###Physical requirements###
-* USB-> USB Type B
 * Scissor
-* Access to printer
+* Own printer
 * Vote counter != adjustor (justerare)
 
 ###Technical requirements of the project###
@@ -35,7 +34,7 @@ A voting system for student Division Meeting (Sektionsmöte).
 * Vote counter: Log in with your super secret password.
 * Vote counter: Count the number of people that are eligible to vote on the meeting and add a buffer for people that are late (eg 20)
 * Vote counter: Count the max number of hidden votes and add a buffer for good measure
-* Vote counter: Print (simplex, __not__ duplex) out the one-time-use codes (But not through print.chalmers.se or chalmers.it) 
+* Vote counter: Print (simplex, __not__ duplex) out the one-time-use codes on the brought printer and clear the memory if existing. 
 * Vote counter: Distribute the codes to the people in the meeting through a random measure eg all codes in a bowl and the voter picks one in the bowl.
 
 ###Voting###
