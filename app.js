@@ -1,231 +1,179 @@
 var express = require('express');
 var bodyParser = require('body-parser');
-var cookieParser = require('cookie-parser')
-var Random = require("random-js")(); // uses the nativeMath engine
+var cookieParser = require('cookie-parser');
+var utils = require('./src/utils.js');
+var VoteSessionFactory = require('./src/voteSessionFactory');
+var VoteManager = require('./src/voteManager');
+var CodeManager = require('./src/codeManager');
+var VoteCounter = require('./src/voteCounter');
 var app = express();
-var expressWs = require('express-ws')(app); //app = express app
-var wrongTries = 0;
-var wrongAdminTries = 0;
-var currentCountDown;
-
 
 app.set('port', (process.env.PORT || 5000));
 app.set('password', (process.env.PASSWORD || 'admin'));
+app.set('users', parseInt(process.env.NUM_USERS || 20, 10));
+app.set('codesPerUser', parseInt(process.env.CODES_PER_USER || 20, 10));
 
-
-
-var voteSessionNumber = 1;
 
 var vote = {};
-
-var votesCount = [0, 0, 0];
+var voteManager = null;
+var codeManager = new CodeManager();
+var adminToken = null;
 
 var conf = {
     pass: app.get('password'),
-    users: 20,
-    lengthOfCodes: 12,
-    nbrOfCodesPerUser: 20,
-    maxWrongTries: 10000,
-    maxWrongAdminTries: 100,
-    base58string: '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz'
-}
+    users: app.get('users'),
+    lengthOfCodes: 3,
+    nbrOfCodesPerUser: app.get('codesPerUser')
+};
 
 var codes = [];
 
 app.use(bodyParser.json()); // support json encoded bodies
-app.use(bodyParser.urlencoded({
-    extended: true
-})); // support encoded bodies
-app.use(cookieParser())
-app.set('views', __dirname + '/views');
-app.engine('html', require('ejs').renderFile);
-app.set('view engine', 'ejs');
+app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
+app.use(cookieParser());
 app.use(express.static('public'));
 
+app.set('views', __dirname + '/views');
+app.set('view engine', 'ejs');
+
+app.engine('html', require('ejs').renderFile);
+
 var POSSIBLE_STATES = {
-    no_vote: "noVote",
-    vote: "vote"
+    noVote: "noVote",
+    vote: "vote",
     result: "result"
+};
+
+function isAuthenticated(req, res) {
+    var header = req.header('Authorization');
+
+    if (adminToken === null || header === null || header.substring(6) !== adminToken) {
+        res.status(401).end();
+        return false;
+    }
+    return true;
 }
 
-var state = "noVote";
+app.locals.POSSIBLE_STATES = POSSIBLE_STATES;
+app.locals.CURRENT_STATE = POSSIBLE_STATES.noVote;
 
 app.get('/', function(req, res) {
-    console.log(vote);
-    res.render('frontend.html', {
-        state: state,
-        vote: vote
-    });
-});
-
-app.get('/loginAdmin', function(req, res) {
-    res.render('loginAdmin.html');
-});
-
-app.post('/loginAdmin', function(req, res) {
-    if (req.body.pass == conf.pass) {
-        res.cookie('password', req.body.pass, {
-            maxAge: 900000,
-            httpOnly: false
-        });
-        res.redirect('/admin');
-    } else {
-        res.send('FAIL');
-    }
-});
-
-app.get('/createVoteSession', function(req, res) {
-    res.render('createVoteSession.html');
-});
-
-app.post('/createVoteSession', function(req, res) {
-    state = POSSIBLE_STATES.vote;
-
-    var optionsList = req.body.textbox.map(function(value, index) {
-        return {
-            id: index,
-            name: value,
-            vacant: false
-        };
-    });
-
-    var vacantOptions = [];
-    if (req.body.vakant == 'on') {
-        for (var i = 0; i < req.body.maxallowedoptions; i++) {
-            var index = optionsList.length + i
-            vacantOptions.push({
-                id: index,
-                name: "Vakant" + (i + 1),
-                vacant: true
-            });
-        };
-    }
-
-    vote = {
-        id: voteSessionNumber,
-        timeLeft: req.body.maxtime, //in sek
-        options: optionsList,
-        vacantOptions: vacantOptions,
-        maximumNbrOfVotes: req.body.maxallowedoptions,
-        winners: []
-    };
-
-    votesCount = Array.apply(null, Array(optionsList.length)).map(function(x, i) {
-        return 0;
-    });
-
-    voteSessionNumber++;
-    res.redirect('/admin');
-    currentCountDown = setInterval(countDown, 1000);
-});
-
-function countDown() {
-    vote.timeLeft--;
-    if (vote.timeLeft == 0) {
-        for (var i = 0; i < vote.maximumNbrOfVotes; i++) {
-            var aWinner = votesCount.indexOf(Math.max.apply(Math, votesCount)) + 1;
-            votesCount[aWinner - 1] = -1;
-
-            var findById = function(arr, id) {
-                for (var i = 0; i < arr.length; i++) {
-                    console.log(arr[i].id + " - " + id);
-                    if (arr[i].id == id) {
-                        return arr[i];
-                    }
-                }
-            }
-
-            vote.winners.push(findById(vote.options, aWinner));
-        }
-        state = POSSIBLE_STATES.result;
-        clearInterval(currentCountDown);
-    }
-}
-
-app.post('/vote', function(req, res) {
-    var validCode = false;
-    if (req.body.code == undefined) {
-        res.send('FAIL: code not defined');
-    }
-    for (var i = 0; i < codes.length; i++) {
-        if (codes[i][vote.id - 1] == req.body.code) {
-            validCode = true;
-            break;
-        }
-    }
-    if (validCode) { 
-        if (req.body.vote.length > vote.maximumNbrOfVotes) {
-            res.send('FAIL to many votes');
-        } else {
-            var allExist = true;
-            for (var i = 0; i < req.body.vote.length; i++) {
-                if (votesCount[req.body.vote[i]] == undefined) {
-                    allExist = false;
-
-                }
-            }
-
-            if (allExist) {
-                for (var i = 0; i < req.body.vote.length; i++) {
-                    votesCount[req.body.vote[i] - 1]++;
-                }
-                res.send('okej');
-            } else {
-                res.send('FAIL try to vote on a non existing thing');
-            }
-        }
-    } else {
-        wrongTries++;
-        res.send('FAIL: invalid code');
-    }
-});
-
-app.post('/login', function(req, res) {
-    //res.send(test+' Hello World!');
+    res.render('index.html');
 });
 
 app.get('/admin', function(req, res) {
-    if (req.cookies.password != conf.pass) {
-        res.redirect('/loginAdmin');
-    } else {
-        res.render('admin.html');
+    res.redirect('/#/admin');
+});
+
+app.get('/status', function(req, res) {
+    switch (app.locals.CURRENT_STATE) {
+        case POSSIBLE_STATES.noVote:
+            res.json({
+                sessionNumber: codeManager.currentSession,
+                state: app.locals.CURRENT_STATE,
+                codesGenerated: codeManager.codesGenerated
+            });
+            break;
+        case POSSIBLE_STATES.vote:
+            res.json({
+                sessionNumber: codeManager.currentSession,
+                state: app.locals.CURRENT_STATE,
+                maximumNbrOfVotes: vote.maximumNbrOfVotes,
+                codesGenerated: codeManager.codesGenerated,
+                candidates: vote.options.shuffle(),
+                vacants: vote.vacantOptions,
+                codeLength: conf.lengthOfCodes
+            });
+            break;
+        case POSSIBLE_STATES.result:
+            res.json({
+                sessionNumber: codeManager.currentSession,
+                state: app.locals.CURRENT_STATE,
+                codesGenerated: codeManager.codesGenerated,
+                winners: vote.winners.shuffle()
+            });
     }
+    res.end();
+});
+
+app.post('/login', function(req, res) {
+    if (req.body.pass === conf.pass) {
+        adminToken = utils.randomToken(30);
+        res
+            .set('Authorization', 'token ' + adminToken)
+            .end();
+    } else {
+        res.status(403).end();
+    }
+});
+
+app.post('/vote', function(req, res) {
+    var voteData = req.body.vote;
+    var code = req.body.code;
+
+    try {
+        if (app.locals.CURRENT_STATE !== POSSIBLE_STATES.vote) {
+            throw 'Voting is closed';
+        }
+
+        if (!codeManager.isValidCode(code)) {
+            throw 'Invalid code';
+        }
+
+        voteManager.castVote(voteData);
+
+        codeManager.invalidateCode(code);
+    } catch (e) {
+        res.status(400).send('FAIL: ' + e);
+    }
+
+    res.end();
 });
 
 app.get('/admin/print', function(req, res) {
-    if (req.cookies.password != conf.pass) {
-        res.redirect('/loginAdmin');
-    } else {
-        res.render('print.html', {
-            codes: generateCodes()
-        });
+    if (isAuthenticated(req, res)) {
+        var codes = codeManager.generateCodes(conf.users, conf.nbrOfCodesPerUser, conf.lengthOfCodes);
+
+        res.json({
+            codes: codes.transpose()
+        }).end();
     }
 });
 
-var generateCodes = function() {
-    codes = [];
-    for (var i = 0; i < conf.users; i++) {
-        oneUserCodes = [];
-        for (var j = 0; j < conf.nbrOfCodesPerUser; j++) {
-            oneUserCodes.push(randomString(conf.lengthOfCodes, conf.base58string));
-        }
-        codes.push(oneUserCodes);
-    }
-    return codes;
-}
+app.post('/createVoteSession', function(req, res) {
+    if (isAuthenticated(req, res)) {
+        app.locals.CURRENT_STATE = POSSIBLE_STATES.vote;
 
-function randomString(length, chars) {
-    var result = '';
-    for (var i = length; i > 0; --i) {
-        result += chars[Random.integer(0, chars.length - 1)];
-    }
-    return result;
-}
+        codeManager.nextSession();
+        var candidates = req.body.candidates.map(c => c.trim()).filter(c => c !== '');
 
-//server start stuff.
+        var vacantEnabled = req.body.vacant;
+        var maxCandidates = req.body.max_candidates;
+
+        vote = VoteSessionFactory.createVoteSession(candidates, vacantEnabled, maxCandidates);
+
+        voteManager = new VoteManager(vote.options,
+                                      vote.vacantOptions,
+                                      vote.maximumNbrOfVotes);
+
+        res.end();
+    }
+});
+
+app.post('/admin/complete', function(req, res) {
+    if (isAuthenticated(req, res)) {
+        var votesCount = voteManager.closeVotingSession();
+        vote.winners = VoteCounter.countVotes(votesCount, vote.maximumNbrOfVotes);
+        app.locals.CURRENT_STATE = POSSIBLE_STATES.result;
+
+        res.end();
+    }
+});
+
+
 var server = app.listen(app.get('port'), function() {
     var host = server.address().address;
     var port = server.address().port;
 
-    console.log('Example app listening at http://%s:%s', host, port);
+    console.log('VoteIT listening at http://%s:%s', host, port);
 });

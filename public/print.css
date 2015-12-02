@@ -1,25 +1,28 @@
 
 .print-wrapper {
-	display: flex;
-	flex-wrap: wrap;
 	font-family: monospace;
 }
+.print-wrapper > div {
+	display: flex;
+	flex-wrap: wrap;
+}
 
-.print-wrapper table { 
-	page-break-inside:avoid; 
-	page-break-after:auto 
+.print-wrapper table {
+	page-break-inside:avoid;
+	page-break-after:auto;
 }
 
 td.index {
 	padding-right: 1em;
+	text-align: right;
 }
 
 .whitespace-block {
 	width: 100%;
-	margin: 5.2em;
+	margin: 6.5em;
 }
 
 .code-table {
 	border: 1px solid;
-	margin: 1em
+	margin: 0.25em;
 }
