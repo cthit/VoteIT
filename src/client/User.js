@@ -9,6 +9,7 @@ var server = require('./backend');
 const POSSIBLE_STATES = {
     noVote: "noVote",
     vote: "vote",
+    awaitingResult: "awaitingResult",
     result: "result"
 };
 
@@ -21,27 +22,53 @@ var User = React.createClass({
             voteState: POSSIBLE_STATES.noVote,
             candidates: [],
             vacants: [],
-            winners: []
+            winners: [],
+            errors: []
         }
     },
     componentWillMount() {
         this.getServerStatus();
-        setInterval(() => {
-            this.getServerStatus();
+        this.pauseTimeout = false;
+
+        let refreshServerStatus = () => {
+            this.getServerStatus().then(() => {
+                if (!this.pauseTimeout) {
+                    setTimeout(refreshServerStatus, 60000);
+                }
+            });
+        };
+
+        setTimeout(() => {
+            refreshServerStatus()
         }, 60000); // every minute
     },
+    mergeVoteState(prevState, nextState) {
+        if (prevState === POSSIBLE_STATES.awaitingResult) {
+            if (nextState === POSSIBLE_STATES.result) {
+                return nextState;
+            } else {
+                return prevState;
+            }
+        } else {
+            return nextState;
+        }
+
+    },
     getServerStatus() {
-        fetch('/status').then(res => res.json()).then(status => {
+        return fetch('/status').then(res => res.json()).then(status => {
+            let voteState = this.mergeVoteState(this.state.voteState, status.state);
             this.setState({
                 sessionNumber: status.sessionNumber,
                 maximumNbrOfVotes: status.maximumNbrOfVotes,
-                voteState: status.state,
+                voteState,
                 winners: status.winners || [],
                 candidates: status.candidates || [],
                 lowestVacantIndex: status.vacants[0] && status.vacants[0].id,
                 vacants: status.vacants || [],
                 codeLength: status.codeLength || 0
             });
+
+            this.pauseTimeout = voteState === POSSIBLE_STATES.vote;
         });
     },
     handleVacantClicked(id) {
@@ -97,18 +124,29 @@ var User = React.createClass({
         return this.state.candidates.concat(this.state.vacants).filter(c => c.active);
     },
     handleVoteSubmit() {
+        let errors = [];
+        let voteState = this.state.voteState;
         let code = this.codeFields.getCode();
 
         let vote = this.getCheckedCandidates().map(c => c.id);
 
         server.postJSON('/vote', { code, vote })
-            .then((res) => {
-                console.log(res);
+            .then(res => {
+                voteState = POSSIBLE_STATES.awaitingResult;
             })
-
+            .catch(e => {
+                return e.text().then(message => {
+                    errors = [message.replace('FAIL: ', '')];
+                });
+            }).then(() => {
+                this.setState({
+                    errors,
+                    voteState
+                });
+            });
     },
     renderActiveSession() {
-        let { candidates, vacants, sessionNumber, maximumNbrOfVotes, codeLength, lowestVacantIndex } = this.state;
+        let { errors, candidates, vacants, sessionNumber, maximumNbrOfVotes, codeLength, lowestVacantIndex } = this.state;
 
         let numVotesLeft = maximumNbrOfVotes - this.getCheckedCandidates().length;
 
@@ -118,7 +156,7 @@ var User = React.createClass({
             <div className="voting-components">
                 <div className="vote-header">
                     <div className="left">Vote #{sessionNumber + 1}</div>
-                    <div className="right">Selections left: {' ' + numVotesLeft}</div>
+                    <div className="right">Selections left: {numVotesLeft}</div>
                 </div>
                 <CandidateList candidates={candidates} numVotesLeft={numVotesLeft} lowestVacantIndex={lowestVacantIndex} candidateClicked={this.handleCandidateClicked} />
                 <CandidateList candidates={vacants} numVotesLeft={numVotesLeft} lowestVacantIndex={lowestVacantIndex} candidateClicked={this.handleVacantClicked} />
@@ -126,7 +164,20 @@ var User = React.createClass({
                     <h1 className="vote-header">Code</h1>
                     <CodeInput fields={numFields} maxLen={maxLength} ref={(c) => this.codeFields = c} />
                 </div>
+                {errors.length > 0 && (
+                    <ul className="errors">
+                        {errors.map((e, index) => (<li key={index}>{e + '!'}</li>))}
+                    </ul>
+                )}
                 <Button className="large" onClick={this.handleVoteSubmit}>Cast Vote</Button>
+            </div>
+        );
+    },
+    renderAwaitingResult() {
+        return (
+            <div>
+                <h1>Vote submitted</h1>
+                <h2>Awaiting result</h2>
             </div>
         );
     },
@@ -167,6 +218,9 @@ var User = React.createClass({
                 break;
             case POSSIBLE_STATES.result:
                 renderFunction = this.renderWinners;
+                break;
+            case POSSIBLE_STATES.awaitingResult:
+                renderFunction = this.renderAwaitingResult;
                 break;
             default:
                 console.error('Unhandled state', voteState);

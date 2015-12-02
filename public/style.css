@@ -241,3 +241,16 @@ h1 {
 .danger {
     color: #e74c3c;
 }
+
+.errors {
+    list-style-type: none;
+    padding: 0;
+    margin: 3em 2em 0;
+}
+
+.errors li {
+    text-align: center;
+    padding: 1em;
+    background: #e74c3c;
+    color: #fff;
+}
