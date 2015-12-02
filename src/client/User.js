@@ -176,8 +176,8 @@ var User = React.createClass({
     renderAwaitingResult() {
         return (
             <div>
-                <h1>Vote submitted</h1>
-                <h2>Awaiting result</h2>
+                <h1 className="success">Vote submitted</h1>
+                <h2>Awaiting result…</h2>
             </div>
         );
     },

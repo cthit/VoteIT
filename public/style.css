@@ -242,6 +242,10 @@ h1 {
     color: #e74c3c;
 }
 
+.success {
+    color: #4CAF50;
+}
+
 .errors {
     list-style-type: none;
     padding: 0;
