@@ -49,10 +49,14 @@ html, body, #root {
 .voting-components > div {
     margin: 1em 0 0;
 }
-.voting-components .right {
+.vote-header .right {
     justify-content: flex-end;
 }
-.voting-components .right span {
+.vote-header .center {
+    justify-content: center;
+}
+
+.vote-header .right span, .vote-header .center span {
     margin-left: 0.3em;
 }
 

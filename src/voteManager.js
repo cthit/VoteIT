@@ -26,6 +26,15 @@ function createEmptyVoteResults(candidates, vacantCandidates) {
     return voteCount;
 }
 
+VoteManager.prototype.getTotalVoteCount = function() {
+    var that = this;
+
+    return Object.keys(this.voteCount).map(function(key) { return that.voteCount[key].value; })
+        .reduce(function(sum, value) {
+            return sum + value;
+        }, 0);
+};
+
 VoteManager.prototype.castVote = function(vote) {
     var that = this;
     this.validateVote(vote);

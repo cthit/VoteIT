@@ -21,6 +21,7 @@ var Admin = React.createClass({
             signedIn: Boolean(window.sessionStorage.getItem(TOKEN_KEY)),
             codes: [],
             voteState: POSSIBLE_STATES.noVote,
+            votesReceived: 0,
             error: false
         };
     },
@@ -31,6 +32,7 @@ var Admin = React.createClass({
         fetch('/status').then(res => res.json()).then(status => {
             this.setState({
                 codesGenerated: status.codesGenerated,
+                votesReceived: status.votesReceived,
                 voteState: status.state
             });
         });
@@ -95,13 +97,18 @@ var Admin = React.createClass({
         );
     },
     render() {
-        let { signedIn, error, codesGenerated, voteState, showPrint, codes } = this.state;
+        let { signedIn, error, votesReceived, voteState, showPrint, codes } = this.state;
 
         let voteInProgress = voteState === POSSIBLE_STATES.vote;
 
         if (signedIn) {
             return (
                 <div>
+                    {voteInProgress &&
+                        <div className="vote-header">
+                            <div className="center">Votes received: {votesReceived}</div>
+                        </div>
+                    }
                     {voteInProgress && <Button className="large red" onClick={this.confirmEndVote}>End ongoing vote</Button>}
                     {!voteInProgress && <Button className="large red" onClick={this.confirmOpenPrintPage}>Generate and print new codes</Button>}
                     {!voteInProgress && <Button className="large"
