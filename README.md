@@ -22,13 +22,13 @@ A voting system for student Division Meeting (Sektionsmöte).
 
 ###Setup###
 * ALL: Elect _Vote counters_ with ordinary vote counting (Välj rösträknare med vanlig rösträkning)
-* Vote counter: Fork VoteIT to seperate account
-* Vote counter: Create heroku account
+* Vote counter: Fork VoteIT to separate account
+* Vote counter: Create Heroku account
 * Vote counter: Press the plus button in the top right corner
 * Vote counter: Create new app
 * Vote counter: Choose the name: Sektionsmote-{datum} eg Sektionsmote-2015-08-10
-* Vote counter: Link github account to heroku account
-* Vote counter: Create enviroment variable. PASSWORD='your super secret password that you dont use anywhere else and is hard to brutefore and hard to do a dictionary attack'.
+* Vote counter: Link GitHub account to Heroku account
+* Vote counter: Create environment variable. PASSWORD='your super secret password that you don't use anywhere else and is hard to bruteforce and hard to do a dictionary attack'.
 * Vote counter: Deploy the forked VoteIT
 * Vote counter: Go to the url + /admin
 * Vote counter: Log in with your super secret password.
@@ -59,5 +59,5 @@ A voting system for student Division Meeting (Sektionsmöte).
 * gulp
 
 ###How to use Docker###
-* docker build -t cthit/voteit .
-* docker run cthit/voteit
+* `docker build -t cthit/voteit .`
+* `docker run cthit/voteit`
