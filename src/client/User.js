@@ -63,7 +63,7 @@ var User = React.createClass({
                 voteState,
                 winners: status.winners || [],
                 candidates: status.candidates || [],
-                lowestVacantIndex: status.vacants[0] && status.vacants[0].id,
+                lowestVacantIndex: status.vacants && status.vacants[0] && status.vacants[0].id,
                 vacants: status.vacants || [],
                 codeLength: status.codeLength || 0
             });
