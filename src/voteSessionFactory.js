@@ -4,7 +4,7 @@ function createVoteSession(candidateNames, vacantEnabled, maxCandidates) {
         throw "No candidates defined";
     }
 
-    if (maxCandidates <= 0) {
+    if (maxCandidates <= 0 || isNaN(maxCandidates)) {
         throw "Max selections per vote must be greater than 0";
     }
 
