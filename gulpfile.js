@@ -1,6 +1,5 @@
 'use strict';
 
-var watchify = require('watchify');
 var browserify = require('browserify');
 var reactify = require('reactify');
 var gulp = require('gulp');
@@ -8,14 +7,13 @@ var source = require('vinyl-source-stream');
 var buffer = require('vinyl-buffer');
 var gutil = require('gulp-util');
 var sourcemaps = require('gulp-sourcemaps');
-var assign = require('lodash.assign');
 
 // add custom browserify options here
 var customOpts = {
     entries: ['./src/client/main.js'],
     debug: true
 };
-var opts = assign({}, watchify.args, customOpts);
+var opts = customOpts;
 var b = browserify(opts);
 
 // add transformations here
