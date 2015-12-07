@@ -33,13 +33,13 @@ var conf = {
 };
 
 // Protect app with https redirect
-//app.use(function(req, res, next) {
-//    if(!req.secure) {
-//        return res.end('Please visit the site with HTTPS');
-//    } else {
-//        next();
-//    }
-//});
+app.use(function(req, res, next) {
+    if(!req.secure) {
+        return res.end('Please visit the site with HTTPS');
+    } else {
+        next();
+    }
+});
 
 app.use(function(req, res, next) {
     if (numberOfinvalidVotes > 50000) {
