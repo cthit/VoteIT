@@ -16,7 +16,7 @@ var customOpts = {
     debug: true
 };
 var opts = assign({}, watchify.args, customOpts);
-var b = watchify(browserify(opts));
+var b = browserify(opts);
 
 // add transformations here
 b.transform(reactify);
