@@ -63,7 +63,6 @@ var CreateVoteSession = React.createClass({
         .then((res) => {
             this.props.history.replaceState(null, '/admin');
         }, e => {
-            console.log('kommer jag hit???');
             return e.text().then(message => {
                 errors = [message.replace('FAIL: ', '')];
             });
