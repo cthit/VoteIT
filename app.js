@@ -26,7 +26,13 @@ var conf = {
     nbrOfCodesPerUser: app.get('codesPerUser')
 };
 
-var codes = [];
+// Protect app with https redirect
+app.use(function(req, res, next) {
+    if(!req.secure) {
+        return res.redirect(['https://', req.get('Host'), req.url].join(''));
+    }
+    next();
+});
 
 app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
@@ -82,6 +88,7 @@ app.get('/status', function(req, res) {
                 codesGenerated: codeManager.codesGenerated,
                 candidates: vote.options.shuffle(),
                 vacants: vote.vacantOptions,
+                votesReceived: voteManager.getTotalVoteCount(),
                 codeLength: conf.lengthOfCodes
             });
             break;
