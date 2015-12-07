@@ -1,3 +1,8 @@
+if (!window.fetch) {
+    require('whatwg-fetch');
+    window.fetch = fetch;
+}
+
 const getAuthorizationField = () => {
     let token = window.sessionStorage.getItem('token');
 
