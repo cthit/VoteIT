@@ -3,6 +3,7 @@ var React = require('react');
 var Button = require('./Button');
 var CodeInput = require('./CodeInput');
 var CandidateList = require('./CandidateList');
+var VoteSummary = require('./VoteSummary');
 
 var server = require('./backend');
 
@@ -28,19 +29,6 @@ var User = React.createClass({
     },
     componentWillMount() {
         this.getServerStatus();
-        this.pauseTimeout = false;
-
-        let refreshServerStatus = () => {
-            this.getServerStatus().then(() => {
-                if (!this.pauseTimeout) {
-                    setTimeout(refreshServerStatus, 60000);
-                }
-            });
-        };
-
-        setTimeout(() => {
-            refreshServerStatus()
-        }, 60000); // every minute
     },
     mergeVoteState(prevState, nextState) {
         if (prevState === POSSIBLE_STATES.awaitingResult) {
@@ -67,8 +55,6 @@ var User = React.createClass({
                 vacants: status.vacants || [],
                 codeLength: status.codeLength || 0
             });
-
-            this.pauseTimeout = voteState === POSSIBLE_STATES.vote;
         });
     },
     handleVacantClicked(id) {
@@ -169,6 +155,7 @@ var User = React.createClass({
                         {errors.map((e, index) => (<li key={index}>{e + '!'}</li>))}
                     </ul>
                 )}
+                <VoteSummary candidates={candidates} vacants={vacants} numVotesLeft={numVotesLeft} />
                 <Button className="large" onClick={this.handleVoteSubmit}>Cast Vote</Button>
             </div>
         );

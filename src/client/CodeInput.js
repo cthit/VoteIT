@@ -48,12 +48,11 @@ var CodeInput = React.createClass({
         let { values } = this.state;
         return (
             <div className="multi-input">
-                {values.map((val, i, arr) => (
-                    <div key={i} className="inline-input">
-                        <input type="text" ref={(c) => this.input[i] = c} value={values[i]} onFocus={this.handleOnFocus} onChange={(event) => this.handleOnChange(i, event)}/>
-                        {i < (arr.length - 1) && (<span className="dash">-</span>)}
-                    </div>
-                ))}
+                <input type="text" ref={(c) => this.input[0] = c} value={values[0]} onFocus={this.handleOnFocus} onChange={(event) => this.handleOnChange(0, event)}/>
+                <span className="dash">-</span>
+                <input type="text" ref={(c) => this.input[1] = c} value={values[1]} onFocus={this.handleOnFocus} onChange={(event) => this.handleOnChange(1, event)}/>
+                <span className="dash">-</span>
+                <input type="text" ref={(c) => this.input[2] = c} value={values[2]} onFocus={this.handleOnFocus} onChange={(event) => this.handleOnChange(2, event)}/>
             </div>
         );
     }
