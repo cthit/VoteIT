@@ -199,7 +199,7 @@ var User = React.createClass({
         return (
             <div>
                 <h1><span className="danger">No</span> voting session currently active</h1>
-                There is no election at the time, try again later.
+                There is no election at this time, try again later.
             </div>
         );
     },
