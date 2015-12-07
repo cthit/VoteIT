@@ -4,6 +4,7 @@ function VoteManager(candidates, vacantCandidates, maximumNbrOfVotes) {
     this.voteCount = createEmptyVoteResults(candidates, vacantCandidates);
     this.maximumNbrOfVotes = maximumNbrOfVotes;
     this.isOpen = true;
+    this.numberOfVotes = 0;
 }
 
 VoteManager.prototype.closeVotingSession = function() {
@@ -27,17 +28,14 @@ function createEmptyVoteResults(candidates, vacantCandidates) {
 }
 
 VoteManager.prototype.getTotalVoteCount = function() {
-    var that = this;
-
-    return Object.keys(this.voteCount).map(function(key) { return that.voteCount[key].value; })
-        .reduce(function(sum, value) {
-            return sum + value;
-        }, 0);
+    return this.numberOfVotes;
 };
 
 VoteManager.prototype.castVote = function(vote) {
     var that = this;
     this.validateVote(vote);
+
+    this.numberOfVotes++;
 
     vote.forEach(function(key) {
         that.increaseVoteForCandidate(key);
