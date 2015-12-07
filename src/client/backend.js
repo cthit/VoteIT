@@ -15,7 +15,7 @@ const fetcher = (path, opts) => fetch(path, opts)
         } else {
             throw resp;
         }
-    })
+    });
 
 
 const getJSON = (path) => fetcher(path, {

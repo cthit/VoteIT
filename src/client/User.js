@@ -197,7 +197,7 @@ var User = React.createClass({
     renderNoSession() {
         return (
             <div>
-                <h1><span className="danger">No</span> voting session at the time</h1>
+                <h1><span className="danger">No</span> voting session currently active</h1>
                 There is no election at the time, try again later.
             </div>
         );

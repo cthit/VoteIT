@@ -9,29 +9,44 @@ var VoteCounter = require('./src/voteCounter');
 var app = express();
 
 app.set('port', (process.env.PORT || 5000));
-app.set('password', (process.env.PASSWORD || 'admin'));
-app.set('users', parseInt(process.env.NUM_USERS || 20, 10));
-app.set('codesPerUser', parseInt(process.env.CODES_PER_USER || 20, 10));
+app.set('password', (process.env.PASSWORD));
+app.set('users', parseInt(process.env.NUM_USERS, 10) || 20);
+app.set('codesPerUser', parseInt(process.env.CODES_PER_USER, 10) || 20);
 
+
+if (!app.get('password')) {
+    throw "PASSWORD NOT SET!";
+}
 
 var vote = {};
 var voteManager = null;
 var codeManager = new CodeManager();
 var adminToken = null;
 
+var numberOfinvalidVotes = 0;
+
 var conf = {
     pass: app.get('password'),
     users: app.get('users'),
-    lengthOfCodes: 3,
+    lengthOfCodes: 9,
     nbrOfCodesPerUser: app.get('codesPerUser')
 };
 
 // Protect app with https redirect
 app.use(function(req, res, next) {
     if(!req.secure) {
-        return res.redirect(['https://', req.get('Host'), req.url].join(''));
+        return res.end('Please visit the site with HTTPS');
+    } else {
+        next();
     }
-    next();
+});
+
+app.use(function(req, res, next) {
+    if (numberOfinvalidVotes > 50000) {
+        return res.status(429).end('Server down, too many requests');
+    } else {
+        next();
+    }
 });
 
 app.use(bodyParser.json()); // support json encoded bodies
@@ -132,6 +147,7 @@ app.post('/vote', function(req, res) {
         codeManager.invalidateCode(code);
     } catch (e) {
         res.status(400).send('FAIL: ' + e);
+        numberOfinvalidVotes++;
     }
 
     res.end();
@@ -149,20 +165,26 @@ app.get('/admin/print', function(req, res) {
 
 app.post('/createVoteSession', function(req, res) {
     if (isAuthenticated(req, res)) {
-        app.locals.CURRENT_STATE = POSSIBLE_STATES.vote;
 
-        codeManager.nextSession();
-        var candidates = req.body.candidates.map(c => c.trim()).filter(c => c !== '');
+        try {
+            codeManager.nextSession();
+            var candidates = req.body.candidates.map(c => c.trim()).filter(c => c !== '');
 
-        var vacantEnabled = req.body.vacant;
-        var maxCandidates = req.body.max_candidates;
+            var vacantEnabled = req.body.vacant;
+            var maxCandidates = parseInt(req.body.max_candidates, 10);
 
-        vote = VoteSessionFactory.createVoteSession(candidates, vacantEnabled, maxCandidates);
+            vote = VoteSessionFactory.createVoteSession(candidates, vacantEnabled, maxCandidates);
 
-        voteManager = new VoteManager(vote.options,
-                                      vote.vacantOptions,
-                                      vote.maximumNbrOfVotes);
+            voteManager = new VoteManager(vote.options,
+                                          vote.vacantOptions,
+                                          vote.maximumNbrOfVotes);
 
+
+            app.locals.CURRENT_STATE = POSSIBLE_STATES.vote;
+
+        } catch (e) {
+            res.status(400).send('FAIL: ' + e);
+        }
         res.end();
     }
 });

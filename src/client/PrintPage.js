@@ -1,7 +1,7 @@
 var React = require('react');
 var _ = require('lodash');
 
-const formatCode = code => _.chunk(code, 4).map(c => c.join('')).join('-');
+const formatCode = code => _.chunk(code, 3).map(c => c.join('')).join('-');
 
 const PrintPage = ({ codes }) => (
     <div className="print-wrapper">

@@ -106,7 +106,7 @@ var Admin = React.createClass({
                 <div>
                     {voteInProgress &&
                         <div className="vote-header">
-                            <div className="center">Votes received: {votesReceived}</div>
+                            <div className="center">Votes received: {votesReceived || '0'}</div>
                         </div>
                     }
                     {voteInProgress && <Button className="large red" onClick={this.confirmEndVote}>End ongoing vote</Button>}

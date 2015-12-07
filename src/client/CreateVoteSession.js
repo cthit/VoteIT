@@ -9,7 +9,8 @@ var CreateVoteSession = React.createClass({
         return {
             maxCandidates: 0,
             allowVacants: false,
-            options: ['', '']
+            options: ['', ''],
+            errors: []
         };
     },
     addOptionField() {
@@ -52,15 +53,25 @@ var CreateVoteSession = React.createClass({
     },
     handleSubmitSession() {
         let { maxCandidates, allowVacants, options } = this.state;
+        let errors = [];
 
         server.postJSON('/createVoteSession', {
             candidates: options,
             vacant: allowVacants,
             max_candidates: maxCandidates
-        }).then((res) => {
-            this.props.history.replaceState(null, '/admin');
-            console.log(res);
         })
+        .then((res) => {
+            this.props.history.replaceState(null, '/admin');
+        }, e => {
+            console.log('kommer jag hit???');
+            return e.text().then(message => {
+                errors = [message.replace('FAIL: ', '')];
+            });
+        }).then(() => {
+            this.setState({ errors });
+        })
+
+
     },
     renderOptionField(value, index) {
         return (
@@ -72,7 +83,7 @@ var CreateVoteSession = React.createClass({
         );
     },
     render() {
-        let { maxCandidates, allowVacants, options } = this.state;
+        let { maxCandidates, allowVacants, options, errors } = this.state;
 
         return (
             <div className="vote-session-form">
@@ -91,6 +102,12 @@ var CreateVoteSession = React.createClass({
                 <div>
                     <Button onClick={this.addOptionField}>+</Button>
                 </div>
+
+                {errors.length > 0 && (
+                    <ul className="errors">
+                        {errors.map((e, index) => (<li key={index}>{e + '!'}</li>))}
+                    </ul>
+                )}
 
                 <Button className="large" onClick={this.handleSubmitSession}>Start session</Button>
             </div>

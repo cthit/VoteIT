@@ -1,4 +1,13 @@
-function createVoteSession(candidateNames, vacantEnabled, maxCandidates, maxTimeInSeconds) {
+function createVoteSession(candidateNames, vacantEnabled, maxCandidates) {
+
+    if (!candidateNames || candidateNames.length === 0) {
+        throw "No candidates defined";
+    }
+
+    if (maxCandidates <= 0) {
+        throw "Max selections per vote must be greater than 0";
+    }
+
     var candidates = candidateNames.map(function(value, index) {
         return {
             id: index,
