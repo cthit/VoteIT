@@ -4,7 +4,7 @@
   "description": "A voting system for student Division Meeting(Student möte).",
   "main": "index.js",
   "scripts": {
-    "predeploy": "gulp js",
+    "postdeploy": "gulp js",
     "start": "node app.js",
     "test": "jest"
   },
