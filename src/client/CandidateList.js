@@ -11,7 +11,7 @@ var CandidateList = React.createClass({
         let { candidates, numVotesLeft, lowestVacantIndex } = this.props;
         return (
             <div className="candidate-list">
-                {this.props.candidates.map((candidate) =>
+                {candidates.map((candidate) =>
                     (<Candidate key={candidate.id}
                                 candidate={candidate}
                                 disabled={(!candidate.active && numVotesLeft < 1) || (candidate.vacant && candidate.id > lowestVacantIndex)}
