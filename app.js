@@ -32,9 +32,9 @@ var conf = {
     nbrOfCodesPerUser: app.get('codesPerUser')
 };
 
-// Protect app with https redirect
+// Tell user to use HTTPS
 app.use(function(req, res, next) {
-    if(!req.secure) {
+    if(req.headers['x-forwarded-proto']!='https') {
         return res.end('Please visit the site with HTTPS');
     } else {
         next();
