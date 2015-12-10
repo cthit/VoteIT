@@ -1,0 +1,55 @@
+{
+  "name": "VoteIT",
+  "version": "0.0.0",
+  "description": "A voting system for student Division Meeting(Student möte).",
+  "main": "index.js",
+  "scripts": {
+    "postinstall": "gulp js",
+    "start": "node app.js",
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cthit/VoteIT.git"
+  },
+  "keywords": [
+    "Voting",
+    "Chalmers"
+  ],
+  "author": "Erik Axelsson",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/cthit/VoteIT/issues"
+  },
+  "dependencies": {
+    "babel-preset-es2015": "^6.3.13",
+    "babel-preset-react": "^6.3.13",
+    "babelify": "^7.2.0",
+    "body-parser": "^1.14.1",
+    "browserify": "^12.0.1",
+    "cookie-parser": "^1.4.0",
+    "ejs": "^2.3.4",
+    "express": "^4.13.3",
+    "express-ws": "^1.0.0-rc.2",
+    "gulp": "^3.9.0",
+    "gulp-babel": "^5.2.1",
+    "gulp-sourcemaps": "^1.6.0",
+    "gulp-util": "^3.0.7",
+    "history": "1.13.x",
+    "lodash": "^3.10.1",
+    "memory-store": "0.0.1",
+    "random-js": "^1.0.6",
+    "react": "^0.14.3",
+    "react-dom": "^0.14.3",
+    "react-popout": "^0.4.0",
+    "react-router": "^1.0.0",
+    "reactify": "^1.1.1",
+    "vinyl-buffer": "^1.0.0",
+    "vinyl-source-stream": "^1.1.0",
+    "watchify": "^3.6.1",
+    "whatwg-fetch": "^0.10.1"
+  },
+  "devDependencies": {
+    "jest-cli": "^0.7.0"
+  }
+}

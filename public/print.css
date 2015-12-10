@@ -1,0 +1,28 @@
+
+.print-wrapper {
+	font-family: monospace;
+}
+.print-wrapper > div {
+	display: flex;
+	flex-wrap: wrap;
+}
+
+.print-wrapper table {
+	page-break-inside:avoid;
+	page-break-after:auto;
+}
+
+td.index {
+	padding-right: 1em;
+	text-align: right;
+}
+
+.whitespace-block {
+	width: 100%;
+	margin: 6.5em;
+}
+
+.code-table {
+	border: 1px solid;
+	margin: 0.25em;
+}
