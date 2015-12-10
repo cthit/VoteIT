@@ -20,18 +20,6 @@ A voting system for student Division Meeting (Sektionsmöte).
 
 [User Instructions](https://github.com/cthit/VoteIT/wiki/User-Instructions)
 
-
-### Voting
-* Vote counter: When its time for election choose the right type and options
-* Vote counter: Pick a time limit, 15 min is recommended
-* ALL: Will see that there is an election
-* ALL: Choose the option(s) that you want and enter the one-time-use code for the election
-
-### End
-* Vote counter: Check the log for suspicions activity eg more deployments
-* Vote counter: Destroy the server
-* Vote counter: Destroy the forked VoteIT 
-
 ## Development
 
 ### Software requirements
