@@ -3,7 +3,7 @@ require('./utils');
 function countVotes(votesCount, maximumNbrOfVotes) {
     var groupedOptions = groupByVoteValue(votesCount);
 
-    var keys = Object.keys(groupedOptions).sort();
+    var keys = Object.keys(groupedOptions).sort((a, b) => a - b);
     var winners = [];
 
     while(maximumNbrOfVotes - winners.length > 0){
