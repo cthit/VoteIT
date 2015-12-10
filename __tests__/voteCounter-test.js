@@ -182,6 +182,27 @@ describe('voteCounter', function() {
             }).sort()).toEqual(['cand1', 'cand2']);
         });
 
+        it('should pick the two candidates with most votes, even with values > 10', function() {
+            var votesCount = [
+                {value: 4, item: {name: 'cand1', vacant: false}},
+                {value: 10, item: {name: 'cand2', vacant: false}},
+                {value: 3, item: {name: 'cand3', vacant: false}},
+                {value: 100, item: {name: 'cand7', vacant: false}},
+                {value: 14, item: {name: 'vakant1', vacant: true}},
+                {value: 2, item: {name: 'cand4', vacant: false}},
+                {value: 1, item: {name: 'vakant2', vacant: true}}
+            ];
+
+            var spots = 4;
+            var winners = VoteCounter.countVotes(votesCount, spots);
+
+            expect(winners.length).toBe(spots);
+
+            expect(winners.map(function(winner) {
+                return winner.name;
+            }).sort()).toEqual(['cand1', 'cand2', 'cand7', 'vakant1']);
+        });
+
         it('should pick the three candidates with most votes', function() {
             var votesCount = [
                 {value: 4, item: {name: 'cand1', vacant: false}},
