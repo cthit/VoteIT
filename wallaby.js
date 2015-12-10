@@ -1,7 +1,7 @@
 module.exports = function () {
 
     return {
-        files: ['*.js', '!__tests__/*.js'],
+        files: ['src/**/*.js'],
 
         tests: ['__tests__/*-test.js'],
 
