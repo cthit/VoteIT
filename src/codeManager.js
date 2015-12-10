@@ -7,10 +7,12 @@ function CodeManager() {
 }
 
 CodeManager.prototype.nextSession = function() {
+    if (!this.codesGenerated) {
+        throw "No codes generated";
+    }
+
     if (this.codes[this.currentSession + 1]) {
         this.currentSession++;
-    } else if (this.currentSession === -1) {
-        throw "No codes generated";
     } else {
         this.currentSession = -1;
         throw "Out of generated codes";
