@@ -1,7 +1,7 @@
 var Random = require("random-js"); // uses the nativeMath engine
 var randomjs = Random(Random.engines.browserCrypto);
 
-var BASE58CHARS = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
+var BASE58CHARS = '23456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz';
 
 function generateCodes(nbrOfUsers, nbrOfCodesPerUser, lengthOfCodes) {
     var codes = [];
