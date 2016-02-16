@@ -83,6 +83,12 @@ app.get('/', function(req, res) {
     res.render('index.html');
 });
 
+app.get('/health-check', function(req, res) {
+    res.json({
+        codesGenerated: codeManager && codeManager.codesGenerated
+    }).end();
+});
+
 app.get('/admin', function(req, res) {
     res.redirect('/#/admin');
 });
