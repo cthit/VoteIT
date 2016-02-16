@@ -22,6 +22,7 @@ var vote = {};
 var voteManager = null;
 var codeManager = new CodeManager();
 var adminToken = null;
+var latestResult = {};
 
 var numberOfinvalidVotes = 0;
 
@@ -193,11 +194,22 @@ app.post('/admin/complete', function(req, res) {
     if (isAuthenticated(req, res)) {
         var votesCount = voteManager.closeVotingSession();
         vote.winners = VoteCounter.countVotes(votesCount, vote.maximumNbrOfVotes);
+
+        latestResult.votesCount = votesCount;
+        latestResult.winners = vote.winners;
+
         app.locals.CURRENT_STATE = POSSIBLE_STATES.result;
 
         res.end();
     }
 });
+
+app.get('/admin/result', function(req, res) {
+  if (isAuthenticated(req, res)) {
+      res.json(latestResult);
+      res.end();
+  }
+})
 
 
 var server = app.listen(app.get('port'), function() {

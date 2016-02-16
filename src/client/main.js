@@ -11,6 +11,7 @@ var User = require('./User');
 var Admin = require('./Admin');
 var App = require('./App');
 var CreateVoteSession = require('./CreateVoteSession');
+var RawResult = require('./RawResult');
 
 ReactDOM.render((
     <Router>
@@ -18,6 +19,7 @@ ReactDOM.render((
             <IndexRoute path="" component={User}></IndexRoute>
             <Route path="admin" component={Admin}></Route>
             <Route path="admin/createVoteSession" component={CreateVoteSession}></Route>
+            <Route path="admin/rawResult" component={RawResult}></Route>
         </Route>
     </Router>
 ), document.getElementById('root'));

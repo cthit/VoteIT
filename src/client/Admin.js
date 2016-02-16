@@ -98,7 +98,6 @@ var Admin = React.createClass({
     },
     render() {
         let { signedIn, error, votesReceived, voteState, showPrint, codes } = this.state;
-
         let voteInProgress = voteState === POSSIBLE_STATES.vote;
 
         if (signedIn) {
@@ -115,6 +114,7 @@ var Admin = React.createClass({
                                 onClick={() => this.props.history.pushState(null, '/admin/createVoteSession')}>
                             Create new voting session
                         </Button>}
+                    <Button className="small" onClick={() => this.props.history.pushState(null, '/admin/rawResult')}>Show raw result</Button>
                     <Button className="small" onClick={this.clearToken}>Sign out</Button>
                     {showPrint && this.renderPrintPage(codes)}
                 </div>
