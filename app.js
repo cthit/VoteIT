@@ -197,6 +197,7 @@ app.post('/admin/complete', function(req, res) {
 
         latestResult.votesCount = votesCount;
         latestResult.winners = vote.winners;
+        latestResult.rawVotes = voteManager.getRawVotes();
 
         app.locals.CURRENT_STATE = POSSIBLE_STATES.result;
 

@@ -288,24 +288,36 @@ h1 {
     border-top: 0;
 }
 
-.raw-result-candidate {
+.summary-result-wrapper {
+    margin: 1em 1em;
+}
+
+.summary-result-candidate {
   display: flex;
   flex-direction: row;
 }
 
-.raw-result-candidate span {
+.summary-result-candidate span {
   margin-left: 1em;
 }
 
-.raw-result-winner {
+.summary-result-winner {
   display: flex;
   flex-direction: row;
 }
 
-.raw-result-winner span {
+.summary-result-winner span {
   margin-left: 1em;
 }
 
-.raw-result-winner-container {
+.summary-result-winner-container {
   margin-top: 2em;
+}
+
+.raw-results-wrapper {
+    margin-top: 1em;
+}
+
+.raw-results-explaination {
+    margin-bottom: 1em;
 }
