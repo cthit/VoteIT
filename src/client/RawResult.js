@@ -1,5 +1,7 @@
 var React = require('react');
 
+var Button = require('./Button');
+
 var { getJSON } = require('./backend');
 
 var RawResult = React.createClass({
@@ -10,7 +12,8 @@ var RawResult = React.createClass({
   getInitialState() {
       return {
         data: {},
-        hasData: false
+        hasData: false,
+        showRawVotes: false
       };
   },
   getRawResult() {
@@ -26,20 +29,40 @@ var RawResult = React.createClass({
         });
     });
   },
+  handleRawResultToggle() {
+    let { showRawVotes } = this.state;
+    this.setState({
+      showRawVotes: !showRawVotes
+    })
+  },
     render() {
-        let {data, hasData} = this.state;
+        let {data, hasData, showRawVotes} = this.state;
+
         if(hasData) {
+          data.rawVotes = data.rawVotes.concat(data.rawVotes).concat(data.rawVotes).concat(data.rawVotes).concat(data.rawVotes);
 
           return (
-              <div className="raw-result-wrapper">
-              {data.votesCount.map((candidate, index) => (
-                <div className="raw-result-candidate" key={index}>Value: {candidate.value} CandidateId: {candidate.item.id} CandidateName: {candidate.item.name} </div>
-              ))}
-              <div className="raw-result-winner-container">
-              {data.winners.map((winner, index) => (
-                <div className="raw-result-winner" key={index}> WinnerId: {winner.id} WinnerName: {winner.name} </div>
-              ))}
-              </div>
+            <div className="raw-result-page-container">
+              <div className="summary-result-wrapper">
+                {data.votesCount.map((candidate, index) => (
+                  <div className="summary-result-candidate" key={index}>Value: {candidate.value} CandidateId: {candidate.item.id} CandidateName: {candidate.item.name} </div>
+                ))}
+                <div className="summary-result-winner-container">
+                  {data.winners.map((winner, index) => (
+                    <div className="summary-result-winner" key={index}> WinnerId: {winner.id} WinnerName: {winner.name} </div>
+                  ))}
+                </div>
+                </div>
+                <Button className="" onClick={this.handleRawResultToggle}>Toggle raw votes</Button>
+              {showRawVotes && (
+                <div className="raw-results-wrapper">
+                  <h2>Number votes: {data.rawVotes.length}</h2>
+                  <div className="raw-results-explaination">Each row of: [candidateId1 ... candidateIdN] represents one persons vote.</div>
+                  {data.rawVotes.map((rawResult, index) => (
+                    <div className="raw-vote" key={index}> { JSON.stringify(rawResult) } </div>
+                  ))}
+                </div>
+                )}
               </div>
             );
         } else {
