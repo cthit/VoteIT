@@ -1,28 +1,16 @@
 
-.print-wrapper {
-	font-family: monospace;
-}
-.print-wrapper > div {
+.users-container {
 	display: flex;
+	flex-direction: row;
 	flex-wrap: wrap;
 }
 
-.print-wrapper table {
-	page-break-inside:avoid;
-	page-break-after:auto;
-}
-
-td.index {
-	padding-right: 1em;
-	text-align: right;
-}
-
-.whitespace-block {
-	width: 100%;
-	margin: 6.5em;
-}
-
-.code-table {
-	border: 1px solid;
-	margin: 0.25em;
+.one-user-codes {
+	margin-top: 8%;
+	margin-bottom: 8%;
+	margin-left: 2.5%;
+	margin-right: 2.5%;
+	min-width: 7em;
+	min-height: 40%;
+	max-height: 40%;
 }

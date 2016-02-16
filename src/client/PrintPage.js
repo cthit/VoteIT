@@ -2,28 +2,19 @@ var React = require('react');
 var _ = require('lodash');
 
 const formatCode = code => _.chunk(code, 3).map(c => c.join('')).join('-');
+const formatIndex = index => index > 9 ? index : ' ' + index;
+
+const formatRow = codes => _.zip(...codes).map((voteSessionCodes, index) => (
+    voteSessionCodes.map((code) => (
+        (formatIndex(index + 1)) + ' ' + formatCode(code)
+    )).join('\t')
+)).join('\n')
+
 
 const PrintPage = ({ codes }) => (
-    <div className="print-wrapper">
-        {_.chunk(codes, 8).map((codes8, index) => (
-            <div key={index}>
-                {codes8.map((userCodes, index) => (
-                    <table className="code-table" key={index}>
-                        <tbody>
-                            {userCodes.map((code, index) => (
-                                <tr key={index}>
-                                    <td className="index">{index + 1}</td>
-                                    <td className="code">{formatCode(code)}</td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                ))}
-                <div className="whitespace-block">This space is intentionally left blank</div>
-            </div>
-        ))}
-    </div>
+    <pre className="code-wrapper">
+        {_.chunk(codes, 4).map(formatRow).join('\n\n')}
+    </pre>
 );
-
 
 module.exports = PrintPage;
