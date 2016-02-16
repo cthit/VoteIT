@@ -5,7 +5,7 @@ var Popout = require('react-popout');
 var Button = require('./Button');
 var PrintPage = require('./PrintPage');
 
-var { getJSON, postJSON } = require('./backend');
+var { postJSON } = require('./backend');
 
 const TOKEN_KEY = 'token';
 
@@ -19,7 +19,7 @@ var Admin = React.createClass({
     getInitialState() {
         return {
             signedIn: Boolean(window.sessionStorage.getItem(TOKEN_KEY)),
-            codes: [],
+            showPrint: false,
             voteState: POSSIBLE_STATES.noVote,
             votesReceived: 0,
             error: false
@@ -66,14 +66,9 @@ var Admin = React.createClass({
         });
     },
     confirmOpenPrintPage() {
+        this.getServerStatus();
         if (!this.state.codesGenerated || confirm('Really generate new codes?')) {
-            getJSON('/admin/print').then(data => {
-                this.setState({showPrint: true, codes: data.codes});
-            }, (err) => {
-                if (err.status === 401) {
-                    this.clearToken();
-                }
-            });
+            this.setState({showPrint: true});
         }
     },
     confirmEndVote() {
@@ -88,16 +83,15 @@ var Admin = React.createClass({
             });
         }
     },
-    renderPrintPage(codes) {
-        this.getServerStatus();
+    renderPrintPage() {
         return (
-            <Popout title="Print codes" url="/print.html" onClosing={this.setState({showPrint: false, codes: []})}>
-                <PrintPage codes={codes} />
+            <Popout title="Print codes" url="/print.html" onClosing={() => this.setState({showPrint: false})}>
+                <PrintPage />
             </Popout>
         );
     },
     render() {
-        let { signedIn, error, votesReceived, voteState, showPrint, codes } = this.state;
+        let { signedIn, error, votesReceived, voteState, showPrint } = this.state;
         let voteInProgress = voteState === POSSIBLE_STATES.vote;
 
         if (signedIn) {
@@ -116,7 +110,7 @@ var Admin = React.createClass({
                         </Button>}
                     <Button className="small" onClick={() => this.props.history.pushState(null, '/admin/rawResult')}>Show raw result</Button>
                     <Button className="small" onClick={this.clearToken}>Sign out</Button>
-                    {showPrint && this.renderPrintPage(codes)}
+                    {showPrint && this.renderPrintPage()}
                 </div>
             );
         } else {
