@@ -18,6 +18,10 @@ const fetcher = (path, opts) => fetch(path, opts)
         if (resp.ok) {
             return resp;
         } else {
+            if (resp.status === 401) {
+                // Unauthorized, remove token
+                window.sessionStorage.getItem('token')
+            }
             throw resp;
         }
     });
