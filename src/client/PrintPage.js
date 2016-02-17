@@ -14,7 +14,7 @@ const PrintPage = React.createClass({
         };
     },
 
-    componentDidMount() {
+    componentWillMount() {
         getJSON('/admin/print').then(({ codes }) => {
             this.setState({
                 codes
@@ -22,7 +22,7 @@ const PrintPage = React.createClass({
         });
     },
 
-    renderRow(codes) {
+    renderBlock(codes) {
         return _.zip(...codes).map((voteSessionCodes, index) => (
             voteSessionCodes.map((code) => (
                 (formatIndex(index + 1)) + ' ' + formatCode(code)
@@ -35,7 +35,15 @@ const PrintPage = React.createClass({
 
         return (
             <pre className="code-wrapper">
-                {_.chunk(codes, 4).map(this.renderRow).join('\n\n')}
+                {
+                    _.chunk(
+                        _.chunk(codes, 4).map(this.renderBlock),
+                        3
+                    ).map(
+                        triple => triple.join('\n'.repeat(3))
+                    )
+                    .join('\n'.repeat(3))
+                }
             </pre>
         );
     }

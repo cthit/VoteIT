@@ -1,16 +1,5 @@
-
-.users-container {
-	display: flex;
-	flex-direction: row;
-	flex-wrap: wrap;
-}
-
-.one-user-codes {
-	margin-top: 8%;
-	margin-bottom: 8%;
-	margin-left: 2.5%;
-	margin-right: 2.5%;
-	min-width: 7em;
-	min-height: 40%;
-	max-height: 40%;
+.main-body, .code-wrapper {
+	margin: 0;
+	padding: 0;
+	font-size: 9pt;
 }

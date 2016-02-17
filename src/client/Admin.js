@@ -19,7 +19,6 @@ var Admin = React.createClass({
     getInitialState() {
         return {
             signedIn: Boolean(window.sessionStorage.getItem(TOKEN_KEY)),
-            showPrint: false,
             voteState: POSSIBLE_STATES.noVote,
             votesReceived: 0,
             error: false
@@ -66,9 +65,8 @@ var Admin = React.createClass({
         });
     },
     confirmOpenPrintPage() {
-        this.getServerStatus();
         if (!this.state.codesGenerated || confirm('Really generate new codes?')) {
-            this.setState({showPrint: true});
+            this.props.history.pushState(null, '/admin/print');
         }
     },
     confirmEndVote() {
@@ -83,15 +81,8 @@ var Admin = React.createClass({
             });
         }
     },
-    renderPrintPage() {
-        return (
-            <Popout title="Print codes" url="/print.html" onClosing={() => this.setState({showPrint: false})}>
-                <PrintPage />
-            </Popout>
-        );
-    },
     render() {
-        let { signedIn, error, votesReceived, voteState, showPrint } = this.state;
+        let { signedIn, error, votesReceived, voteState } = this.state;
         let voteInProgress = voteState === POSSIBLE_STATES.vote;
 
         if (signedIn) {
@@ -110,7 +101,6 @@ var Admin = React.createClass({
                         </Button>}
                     <Button className="small" onClick={() => this.props.history.pushState(null, '/admin/rawResult')}>Show raw result</Button>
                     <Button className="small" onClick={this.clearToken}>Sign out</Button>
-                    {showPrint && this.renderPrintPage()}
                 </div>
             );
         } else {
