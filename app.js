@@ -24,7 +24,8 @@ var codeManager = new CodeManager();
 var adminToken = null;
 var latestResult = {};
 
-var numberOfinvalidVotes = 0;
+var numberOfInvalidVotes = 0;
+var numberOfAdminLoginTries = 0;
 
 var conf = {
     pass: app.get('password'),
@@ -43,7 +44,7 @@ app.use(function(req, res, next) {
 });
 
 app.use(function(req, res, next) {
-    if (numberOfinvalidVotes > 50000) {
+    if (numberOfInvalidVotes > 50000 || numberOfAdminLoginTries > 1000) {
         return res.status(429).end('Server down, too many requests');
     } else {
         next();
@@ -132,6 +133,7 @@ app.post('/login', function(req, res) {
             .set('Authorization', 'token ' + adminToken)
             .end();
     } else {
+        numberOfAdminLoginTries++;
         res.status(403).end();
     }
 });
@@ -154,7 +156,7 @@ app.post('/vote', function(req, res) {
         codeManager.invalidateCode(code);
     } catch (e) {
         res.status(400).send('FAIL: ' + e);
-        numberOfinvalidVotes++;
+        numberOfInvalidVotes++;
     }
 
     res.end();
