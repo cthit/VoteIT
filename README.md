@@ -20,6 +20,15 @@ A voting system for student Division Meeting (Sektionsmöte).
 
 [User Instructions](https://github.com/cthit/VoteIT/wiki/User-Instructions)
 
+Server on heroku needs to be kept alive (sleeps after 30 mins of inactivity by default) using something like the following script:
+
+```bash
+while true; do
+	curl -s https://$SERVERNAME/health-check
+	sleep 60
+done
+```
+
 ## Development
 
 ### Software requirements
