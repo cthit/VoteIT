@@ -71,6 +71,7 @@ function isAuthenticated(req, res) {
     var header = req.header('Authorization');
 
     if (adminToken === null || header === null || header.substring(6) !== adminToken) {
+        numberOfAdminLoginTries++;
         res.status(401).end();
         return false;
     }
