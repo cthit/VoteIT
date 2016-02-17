@@ -20,7 +20,7 @@ const fetcher = (path, opts) => fetch(path, opts)
         } else {
             if (resp.status === 401) {
                 // Unauthorized, remove token
-                window.sessionStorage.getItem('token')
+                window.sessionStorage.removeItem('token')
             }
             throw resp;
         }
