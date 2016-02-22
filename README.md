@@ -25,7 +25,7 @@ Server on heroku needs to be kept alive (sleeps after 30 mins of inactivity by d
 ```bash
 SERVERNAME="sektionsmote-2015-12-07"
 while true; do
-	curl -s https://${SERVERNAME}.heroku.com/health-check
+	curl -s https://${SERVERNAME}.herokuapp.com/health-check
 	sleep 60
 done
 ```
