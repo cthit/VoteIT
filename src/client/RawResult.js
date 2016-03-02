@@ -39,8 +39,6 @@ var RawResult = React.createClass({
     let {data, hasData, showRawVotes} = this.state;
 
     if(hasData) {
-      data.rawVotes = data.rawVotes.concat(data.rawVotes).concat(data.rawVotes).concat(data.rawVotes).concat(data.rawVotes);
-
       return (
         <div className="raw-result-page-container">
         <div className="summary-result-wrapper">
