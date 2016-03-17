@@ -76,7 +76,7 @@ var CreateVoteSession = React.createClass({
         return (
             <div className="form-group" key={index}>
                 <label htmlFor={'option' + index}>Option #{index + 1}:</label>
-                <input type="text" id={'option' + index} value={value} placeholder="Write an option.." onChange={(e) => this.changeOptionValue(index, e)} />
+                <input type="text" autoComplete="off" autoCapitalize="none" autoCorrect="off" id={'option' + index} value={value} placeholder="Write an option.." onChange={(e) => this.changeOptionValue(index, e)} />
                 <Button onClick={() => this.removeOptionField(index)}>⨉</Button>
             </div>
         );
