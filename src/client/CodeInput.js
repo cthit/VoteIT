@@ -45,14 +45,15 @@ var CodeInput = React.createClass({
         target.setSelectionRange(0, 10);
     },
     render() {
-        let { values } = this.state;
+        const { values } = this.state;
+        const { maxLen } = this.props;
         return (
             <div className="multi-input">
-                <input type="text" autoCapitalize="none" autoComplete="off" autoCorrect="off" ref={(c) => this.input[0] = c} value={values[0]} onFocus={this.handleOnFocus} onChange={(event) => this.handleOnChange(0, event)}/>
-                <span className="dash">-</span>
-                <input type="text" autoCapitalize="none" autoComplete="off" autoCorrect="off" ref={(c) => this.input[1] = c} value={values[1]} onFocus={this.handleOnFocus} onChange={(event) => this.handleOnChange(1, event)}/>
-                <span className="dash">-</span>
-                <input type="text" autoCapitalize="none" autoComplete="off" autoCorrect="off" ref={(c) => this.input[2] = c} value={values[2]} onFocus={this.handleOnFocus} onChange={(event) => this.handleOnChange(2, event)}/>
+                <input type="text" style={{width: maxLen + 'em'}} autoCapitalize="none" autoComplete="off" autoCorrect="off" ref={(c) => this.input[0] = c} value={values[0]} onFocus={this.handleOnFocus} onChange={(event) => this.handleOnChange(0, event)}/>
+                <span className="dash"> - </span>
+                <input type="text" style={{width: maxLen + 'em'}} autoCapitalize="none" autoComplete="off" autoCorrect="off" ref={(c) => this.input[1] = c} value={values[1]} onFocus={this.handleOnFocus} onChange={(event) => this.handleOnChange(1, event)}/>
+                <span className="dash"> - </span>
+                <input type="text" style={{width: maxLen + 'em'}} autoCapitalize="none" autoComplete="off" autoCorrect="off" ref={(c) => this.input[2] = c} value={values[2]} onFocus={this.handleOnFocus} onChange={(event) => this.handleOnChange(2, event)}/>
             </div>
         );
     }
