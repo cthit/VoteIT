@@ -38,7 +38,7 @@ done
 
 ### Build
 * `npm start`
-* `gulp js`
+* `gulp`
 
 ### How to use Docker (optional)
 * `docker build -t cthit/voteit .`
