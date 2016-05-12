@@ -179,11 +179,14 @@ html, body, #root {
     justify-content: center;
 }
 .multi-input input {
+    font-family: monospace;
+    padding: 0.3em 0;
     flex: 3;
     font-size: 1em;
     text-align: center;
 }
 .multi-input .dash {
+    line-height: 2em;
     flex: 1;
     text-align: center;
 }
