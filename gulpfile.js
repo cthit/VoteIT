@@ -7,6 +7,7 @@ var source = require('vinyl-source-stream');
 var buffer = require('vinyl-buffer');
 var gutil = require('gulp-util');
 var sourcemaps = require('gulp-sourcemaps');
+var autoprefixer = require('gulp-autoprefixer');
 
 // add custom browserify options here
 var customOpts = {
@@ -20,6 +21,8 @@ var b = browserify(opts);
 b.transform(reactify);
 b.transform("babelify", {presets: ["es2015", "react"]});
 
+gulp.task('default', ['js', 'css']);
+gulp.task('css', bundleCSS);
 gulp.task('js', bundle); // so you can run `gulp js` to build the file
 b.on('update', bundle); // on any dep update, runs the bundler
 b.on('log', gutil.log); // output build logs to terminal
@@ -35,5 +38,17 @@ function bundle() {
         .pipe(sourcemaps.init({loadMaps: true})) // loads map from browserify file
         // Add transformation tasks to the pipeline here.
         .pipe(sourcemaps.write('./')) // writes .map file
+        .pipe(gulp.dest('./public'));
+}
+
+function bundleCSS() {
+    return gulp.src('src/style.css')
+        .pipe(sourcemaps.init())
+        .pipe(autoprefixer({
+            browsers: ['last 2 versions'],
+            cascade: false
+        }))
+        .on('error', gutil.log.bind(gutil, 'Autoprefixer Error'))
+        .pipe(sourcemaps.write('.'))
         .pipe(gulp.dest('./public'));
 }

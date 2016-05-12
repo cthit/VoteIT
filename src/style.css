@@ -65,6 +65,14 @@ html, body, #root {
     font-size: 2em;
 }
 
+.code-header {
+    flex-direction: column;
+}
+
+.code-header h1 {
+    text-align: center;
+}
+
 @media screen and (max-width: 800px) {
     .vote-header { flex-direction: column; }
     .vote-header > div, .vote-header .right { justify-content: center; }
@@ -177,15 +185,21 @@ html, body, #root {
     margin: 0.5em;
     font-size: 2em;
     justify-content: center;
+    align-items: center;
 }
 .multi-input input {
-    flex: 3;
+    font-family: monospace;
+    padding: 0.3em 0;
     font-size: 1em;
     text-align: center;
 }
 .multi-input .dash {
-    flex: 1;
+    line-height: 2em;
     text-align: center;
+
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
 }
 
 .form-group {
@@ -280,8 +294,8 @@ h1 {
     padding: 1em;
 }
 
-.vote-summary {
-    margin: 1em;
+.voting-components .vote-summary {
+    margin: 0.5em;
     background: #fff;
     color: #000;
     border: 4px solid #5cadc5;
