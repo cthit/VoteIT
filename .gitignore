@@ -5,3 +5,4 @@ Server/npm-debug.log
 .idea
 coverage
 public/bundle*
+public/style*
