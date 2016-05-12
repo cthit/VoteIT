@@ -48,7 +48,7 @@ var CodeInput = React.createClass({
         const { values } = this.state;
         const { maxLen } = this.props;
 
-        const emWidth = maxLen + 2 + 'em';
+        const emWidth = maxLen + 'em';
         return (
             <div className="multi-input">
                 <input type="text" style={{width: emWidth}} autoCapitalize="none" autoComplete="off" autoCorrect="off" ref={(c) => this.input[0] = c} value={values[0]} onFocus={this.handleOnFocus} onChange={(event) => this.handleOnChange(0, event)}/>

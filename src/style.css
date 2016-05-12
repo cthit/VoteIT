@@ -65,6 +65,14 @@ html, body, #root {
     font-size: 2em;
 }
 
+.code-header {
+    flex-direction: column;
+}
+
+.code-header h1 {
+    text-align: center;
+}
+
 @media screen and (max-width: 800px) {
     .vote-header { flex-direction: column; }
     .vote-header > div, .vote-header .right { justify-content: center; }
@@ -177,18 +185,21 @@ html, body, #root {
     margin: 0.5em;
     font-size: 2em;
     justify-content: center;
+    align-items: center;
 }
 .multi-input input {
     font-family: monospace;
     padding: 0.3em 0;
-    flex: 3;
     font-size: 1em;
     text-align: center;
 }
 .multi-input .dash {
     line-height: 2em;
-    flex: 1;
     text-align: center;
+
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
 }
 
 .form-group {
