@@ -1,6 +1,7 @@
 var React = require('react');
 
 var Popout = require('react-popout');
+var browserHistory = require('react-router').browserHistory
 
 var Button = require('./Button');
 var PrintPage = require('./PrintPage');
@@ -66,14 +67,14 @@ var Admin = React.createClass({
     },
     confirmOpenPrintPage() {
         if (!this.state.codesGenerated || confirm('Really generate new codes?')) {
-            this.props.history.pushState(null, '/admin/print');
+            browserHistory.push('/admin/print');
         }
     },
     confirmEndVote() {
         if (this.state.voteState === POSSIBLE_STATES.vote && confirm('Really end voting session?')) {
             postJSON('/admin/complete', {}).then(() => {
                 this.getServerStatus();
-                this.props.history.replaceState(null, '/');
+                browserHistory.replace('/');
             }, (err) => {
                 if (err.status === 401) {
                     this.clearToken();
@@ -96,10 +97,10 @@ var Admin = React.createClass({
                     {voteInProgress && <Button className="large red" onClick={this.confirmEndVote}>End ongoing vote</Button>}
                     {!voteInProgress && <Button className="large red" onClick={this.confirmOpenPrintPage}>Generate and print new codes</Button>}
                     {!voteInProgress && <Button className="large"
-                                onClick={() => this.props.history.pushState(null, '/admin/createVoteSession')}>
+                                onClick={() => browserHistory.push('/admin/createVoteSession')}>
                             Create new voting session
                         </Button>}
-                    <Button className="small" onClick={() => this.props.history.pushState(null, '/admin/rawResult')}>Show raw result</Button>
+                    <Button className="small" onClick={() => browserHistory.push('/admin/rawResult')}>Show raw result</Button>
                     <Button className="small" onClick={this.clearToken}>Sign out</Button>
                 </div>
             );
@@ -109,7 +110,7 @@ var Admin = React.createClass({
                     <form onSubmit={this.handleOnSubmit}>
                         <div className="form-group">
                             <label>Password</label>
-                            <input type="password" autofocus ref={c => this.passwordField = c} />
+                            <input type="password" autoFocus={true} ref={c => this.passwordField = c} />
                         </div>
                         <Button onClick={this.handleOnSubmit}>Submit</Button>
                     </form>

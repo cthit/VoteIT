@@ -5,6 +5,7 @@ var ReactRouter = require('react-router');
 var Router = ReactRouter.Router;
 var Route = ReactRouter.Route;
 var IndexRoute = ReactRouter.IndexRoute;
+var browserHistory = ReactRouter.browserHistory;
 
 
 var User = require('./User');
@@ -15,9 +16,9 @@ var RawResult = require('./RawResult');
 var PrintPage = require('./PrintPage');
 
 ReactDOM.render((
-    <Router>
+    <Router history={browserHistory}>
         <Route path="/" component={App}>
-            <IndexRoute path="" component={User}></IndexRoute>
+            <IndexRoute component={User}></IndexRoute>
             <Route path="admin" component={Admin}></Route>
             <Route path="admin/createVoteSession" component={CreateVoteSession}></Route>
             <Route path="admin/rawResult" component={RawResult}></Route>
