@@ -83,10 +83,10 @@ html, body, #root {
     flex: 1;
 }
 
-
 .candidate .status .text {
-    font-size: 3em;
+    text-align: center;
 }
+
 .candidate .status {
     padding-left: 0.5em;
     color: #fff;
@@ -98,6 +98,7 @@ html, body, #root {
 .candidate .name {
     text-align: center;
     flex: 2 1 1em;
+    padding: 0.8em 0;
 }
 
 .candidate .filler {
