@@ -138,16 +138,17 @@ var User = React.createClass({
 
         let numFields = 3;
         let maxLength = codeLength / numFields;
+        const codeNumber = sessionNumber + 1;
         return (
             <div className="voting-components">
                 <div className="vote-header">
-                    <div className="left">Vote #{sessionNumber + 1}</div>
+                    <div className="left">Vote #{codeNumber}</div>
                     <div className="right">Selections left: {numVotesLeft}</div>
                 </div>
                 <CandidateList candidates={candidates} numVotesLeft={numVotesLeft} lowestVacantIndex={lowestVacantIndex} candidateClicked={this.handleCandidateClicked} />
                 <CandidateList candidates={vacants} numVotesLeft={numVotesLeft} lowestVacantIndex={lowestVacantIndex} candidateClicked={this.handleVacantClicked} />
                 <div className="code-header">
-                    <h1>Code</h1>
+                    <h1>Code #{codeNumber}</h1>
                     <CodeInput fields={numFields} maxLen={maxLength} ref={(c) => this.codeFields = c} />
                 </div>
                 {errors.length > 0 && (
