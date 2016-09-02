@@ -46,7 +46,6 @@ var Admin = React.createClass({
     },
     handleOnSubmit() {
         let input = this.passwordField.value;
-        this.passwordField.value = '';
 
         postJSON('/login', {
             pass: input
