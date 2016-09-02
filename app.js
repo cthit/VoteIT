@@ -22,7 +22,11 @@ var vote = {};
 var voteManager = null;
 var codeManager = new CodeManager();
 var adminToken = null;
-var latestResult = {};
+var latestResult = {
+    votesCount: [],
+    winners: [],
+    rawVotes: []
+};
 
 var numberOfInvalidVotes = 0;
 var numberOfAdminLoginTries = 0;
@@ -182,6 +186,10 @@ app.post('/createVoteSession', function(req, res) {
 
             var vacantEnabled = req.body.vacant;
             var maxCandidates = parseInt(req.body.max_candidates, 10);
+
+            latestResult.votesCount = [];
+            latestResult.winners = [];
+            latestResult.rawVotes = [];
 
             vote = VoteSessionFactory.createVoteSession(candidates, vacantEnabled, maxCandidates);
 
