@@ -1,4 +1,5 @@
 var React = require('react');
+var browserHistory = require('react-router').browserHistory
 
 var Button = require('./Button');
 
@@ -61,7 +62,7 @@ var CreateVoteSession = React.createClass({
             max_candidates: maxCandidates
         })
         .then((res) => {
-            this.props.history.replaceState(null, '/admin');
+            browserHistory.replace('/admin');
         }, e => {
             return e.text().then(message => {
                 errors = [message.replace('FAIL: ', '')];
@@ -89,7 +90,7 @@ var CreateVoteSession = React.createClass({
                 <h1>Create Vote Session</h1>
                 <div className="form-group">
                     <label htmlFor="max_candidates">Max selections per vote:</label>
-                    <input type="number" autofocus min={0} id="max_candidates" onChange={this.changeMaxCandidates} value={maxCandidates} placeholder="Write the max allowed options.." />
+                    <input type="number" autoFocus={true} min={0} id="max_candidates" onChange={this.changeMaxCandidates} value={maxCandidates} placeholder="Write the max allowed options.." />
                 </div>
                 <div className="form-group">
                     <label htmlFor="vacant">Vacant enabled:</label>

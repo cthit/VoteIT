@@ -22,7 +22,11 @@ var vote = {};
 var voteManager = null;
 var codeManager = new CodeManager();
 var adminToken = null;
-var latestResult = {};
+var latestResult = {
+    votesCount: [],
+    winners: [],
+    rawVotes: []
+};
 
 var numberOfInvalidVotes = 0;
 var numberOfAdminLoginTries = 0;
@@ -56,7 +60,7 @@ app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 app.use(cookieParser());
 app.use(express.static('public'));
 
-app.set('views', __dirname + '/views');
+app.set('views', __dirname + '/public');
 app.set('view engine', 'ejs');
 
 app.engine('html', require('ejs').renderFile);
@@ -81,18 +85,10 @@ function isAuthenticated(req, res) {
 app.locals.POSSIBLE_STATES = POSSIBLE_STATES;
 app.locals.CURRENT_STATE = POSSIBLE_STATES.noVote;
 
-app.get('/', function(req, res) {
-    res.render('index.html');
-});
-
 app.get('/health-check', function(req, res) {
     res.json({
         codesGenerated: codeManager && codeManager.codesGenerated
     }).end();
-});
-
-app.get('/admin', function(req, res) {
-    res.redirect('/#/admin');
 });
 
 app.get('/status', function(req, res) {
@@ -183,6 +179,10 @@ app.post('/createVoteSession', function(req, res) {
             var vacantEnabled = req.body.vacant;
             var maxCandidates = parseInt(req.body.max_candidates, 10);
 
+            latestResult.votesCount = [];
+            latestResult.winners = [];
+            latestResult.rawVotes = [];
+
             vote = VoteSessionFactory.createVoteSession(candidates, vacantEnabled, maxCandidates);
 
             voteManager = new VoteManager(vote.options,
@@ -220,6 +220,10 @@ app.get('/admin/result', function(req, res) {
       res.end();
   }
 })
+
+app.get(['/', '/admin', '/admin/*'], function(req, res) {
+    res.render('index.html');
+});
 
 
 var server = app.listen(app.get('port'), function() {
