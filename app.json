@@ -2,6 +2,20 @@
   "name": "VoteIT",
   "description": "A voting system",
   "repository": "https://github.com/mlonn/VoteIT",
-  "logo": "https://node-js-sample.herokuapp.com/node.png",
-  "keywords": ["node", "express", "static"]
+  "logo": "http://imgur.com/3Xwg8XF",
+  "keywords": ["node", "voteIT", "voteing"],
+  "env": {
+    "PASSWORD": {
+      "description": "password for /admin",
+      "required": true
+    },
+    "NUM_USERS ": {
+      "description": "Hur många får rösta?",
+      "required": true
+    },
+    "CODES_PER_USER": {
+      "description": "Hur många koder per användare?",
+      "required": true
+    }
+  }
 }
