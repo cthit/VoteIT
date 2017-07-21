@@ -6,15 +6,15 @@
   "keywords": ["node", "voteIT", "voting"],
   "env": {
     "PASSWORD": {
-      "description": "password for /admin",
+      "description": "Password for /admin",
       "required": true
     },
     "NUM_USERS ": {
-      "description": "Hur många får rösta?",
+      "description": "How many users can vote?",
       "required": true
     },
     "CODES_PER_USER": {
-      "description": "Hur många koder per användare?",
+      "description": "How many codes per user?",
       "required": true
     }
   }
