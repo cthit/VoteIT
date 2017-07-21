@@ -3,7 +3,7 @@
   "description": "A voting system",
   "repository": "https://github.com/cthit/VoteIT",
   "logo": "http://imgur.com/3Xwg8XF.png",
-  "keywords": ["node", "voteIT", "voteing"],
+  "keywords": ["node", "voteIT", "voting"],
   "env": {
     "PASSWORD": {
       "description": "password for /admin",
