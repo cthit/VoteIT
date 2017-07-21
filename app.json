@@ -1,7 +1,7 @@
 {
   "name": "VoteIT",
   "description": "A voting system",
-  "repository": "https://github.com/mlonn/VoteIT",
+  "repository": "https://github.com/cthit/VoteIT",
   "logo": "http://imgur.com/3Xwg8XF.png",
   "keywords": ["node", "voteIT", "voteing"],
   "env": {
@@ -10,11 +10,11 @@
       "required": true
     },
     "NUM_USERS ": {
-      "description": "Hur många får rösta?",
+      "description": "Hur mÃ¥nga fÃ¥r rÃ¶sta?",
       "required": true
     },
     "CODES_PER_USER": {
-      "description": "Hur många koder per användare?",
+      "description": "Hur mÃ¥nga koder per anvÃ¤ndare?",
       "required": true
     }
   }
