@@ -18,6 +18,10 @@ A voting system for student Division Meeting (Sektionsmöte).
 
 [Setup Instructions](https://github.com/cthit/VoteIT/wiki/Setup-Instructions-for-Vote-Counters)
 
+or
+
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
+
 [User Instructions](https://github.com/cthit/VoteIT/wiki/User-Instructions)
 
 Server on heroku needs to be kept alive (sleeps after 30 mins of inactivity by default) using something like the following script:

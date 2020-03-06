@@ -1,0 +1,21 @@
+{
+  "name": "VoteIT",
+  "description": "A voting system",
+  "repository": "https://github.com/cthit/VoteIT",
+  "logo": "http://imgur.com/3Xwg8XF.png",
+  "keywords": ["node", "voteIT", "voting"],
+  "env": {
+    "PASSWORD": {
+      "description": "Password for /admin",
+      "required": true
+    },
+    "NUM_USERS ": {
+      "description": "How many users can vote?",
+      "required": true
+    },
+    "CODES_PER_USER": {
+      "description": "How many codes per user?",
+      "required": true
+    }
+  }
+}
