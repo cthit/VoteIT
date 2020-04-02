@@ -1,5 +1,6 @@
 FROM node:12.16.1-buster
-MAINTAINER Erik Axelsson <erikaxelsson1@gmail.com>
+
+LABEL maintainer="digit@chalmers.it"
 
 WORKDIR /usr/src/app
 COPY package*.json ./
