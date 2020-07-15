@@ -39,7 +39,7 @@
     "gulp-babel": "^5.2.1",
     "gulp-sourcemaps": "^1.6.0",
     "gulp-util": "^3.0.7",
-    "lodash": "~4.15.0",
+    "lodash": "~4.17.19",
     "memory-store": "0.0.1",
     "random-js": "^1.0.6",
     "react": "~15.3.1",
