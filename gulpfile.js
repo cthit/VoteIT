@@ -19,11 +19,8 @@ var b = browserify(opts);
 
 // add transformations here
 b.transform(reactify);
-b.transform("babelify", {presets: ["es2015", "react"]});
+b.transform("babelify", {presets: ["env", "react"]});
 
-gulp.task('default', ['js', 'css']);
-gulp.task('css', bundleCSS);
-gulp.task('js', bundle); // so you can run `gulp js` to build the file
 b.on('update', bundle); // on any dep update, runs the bundler
 b.on('log', gutil.log); // output build logs to terminal
 
@@ -52,3 +49,7 @@ function bundleCSS() {
         .pipe(sourcemaps.write('.'))
         .pipe(gulp.dest('./public'));
 }
+
+exports.default = gulp.parallel(bundle,bundleCSS);
+exports.css    = bundleCSS;
+exports.js     = bundle;
