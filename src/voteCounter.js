@@ -1,22 +1,26 @@
-require('./utils');
-
 function countVotes(votesCount, maximumNbrOfVotes) {
+    if (votesCount == null || votesCount.length === 0) {
+        return [];
+    }
+
     var groupedOptions = groupByVoteValue(votesCount);
 
     var keys = Object.keys(groupedOptions).sort((a, b) => a - b);
     var winners = [];
 
-    while(maximumNbrOfVotes - winners.length > 0){
+    while (maximumNbrOfVotes - winners.length > 0) {
         var key = keys.pop();
         var spots = maximumNbrOfVotes - winners.length;
-        winners = winners.concat(concatWithCandidates(groupedOptions[key], spots));
+        winners = winners.concat(
+            concatWithCandidates(groupedOptions[key], spots)
+        );
     }
 
     return winners;
 }
 
 function groupByVoteValue(votesCount) {
-    return votesCount.reduce(function(acc, curr) {
+    return votesCount.reduce(function (acc, curr) {
         acc[curr.value] = acc[curr.value] || [];
         acc[curr.value].push(curr.item);
         return acc;
@@ -40,7 +44,7 @@ function pickWinnersWhenSameVoteCount(candidates, spots) {
         var vacantCandidates = candidates.filter(isVacant);
         moveFromArrayUntilLength(vacantCandidates, winners, spots);
     } else {
-        candidatesExceptVacant.shuffle();
+        candidatesExceptVacant = candidatesExceptVacant.shuffle();
         moveFromArrayUntilLength(candidatesExceptVacant, winners, spots);
     }
 
@@ -65,5 +69,5 @@ module.exports = {
     countVotes: countVotes,
     groupByVoteValue: groupByVoteValue,
     moveFromArrayUntilLength: moveFromArrayUntilLength,
-    pickWinnersWhenSameVoteCount: pickWinnersWhenSameVoteCount
+    pickWinnersWhenSameVoteCount: pickWinnersWhenSameVoteCount,
 };

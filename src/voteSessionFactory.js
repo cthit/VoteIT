@@ -1,5 +1,4 @@
 function createVoteSession(candidateNames, vacantEnabled, maxCandidates) {
-
     if (!candidateNames || candidateNames.length === 0) {
         throw "No candidates defined";
     }
@@ -8,11 +7,11 @@ function createVoteSession(candidateNames, vacantEnabled, maxCandidates) {
         throw "Max selections per vote must be greater than 0";
     }
 
-    var candidates = candidateNames.map(function(value, index) {
+    var candidates = candidateNames.map(function (value, index) {
         return {
             id: index,
             name: value,
-            vacant: false
+            vacant: false,
         };
     });
 
@@ -23,7 +22,7 @@ function createVoteSession(candidateNames, vacantEnabled, maxCandidates) {
             vacantCandidates.push({
                 id: index,
                 name: "Vakant" + (i + 1),
-                vacant: true
+                vacant: true,
             });
         }
     }
@@ -32,11 +31,10 @@ function createVoteSession(candidateNames, vacantEnabled, maxCandidates) {
         options: candidates,
         vacantOptions: vacantCandidates,
         maximumNbrOfVotes: maxCandidates,
-        winners: []
+        winners: [],
     };
 }
 
-
 module.exports = {
-    createVoteSession: createVoteSession
+    createVoteSession: createVoteSession,
 };
