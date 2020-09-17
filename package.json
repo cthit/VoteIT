@@ -4,7 +4,7 @@
     "description": "A voting system for student Division Meeting(Student möte).",
     "scripts": {
         "dev": "export NODE_ENV=dev && nodemon index.js",
-        "start": "npm install && cd client && yarn install && yarn build && cd .. && node index.js",
+        "start": "npm install && cd client && npm install && npm run build && cd .. && node index.js",
         "test": "jest"
     },
     "repository": {

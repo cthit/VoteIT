@@ -35,7 +35,7 @@ done
 From root:
 * `docker-compose up` Starts Gamma locally. Wait until Gamma is fully up and running on `http://localhost:3000`.
 * `npm install && npm run dev`. Starts up the backend part of VoteIT.
-* `cd client && yarn install && yarn start`. Starts upp the frontend part of VoteIt. 
+* `cd client && npm install && npm run start`. Starts upp the frontend part of VoteIt. 
 
 Sign in with the cid: `dbarnevi` and password: `password`. To enter as the counter. Check `http://localhost:3000` to find more cids to use for mock votings. Every account has by default the password: `password`. 
 
