@@ -136,7 +136,9 @@ const canVote = (req, res, next) => {
     if (acceptedUsersManager.usersApproved.includes(req.user.id)) {
         next();
     } else if (req.user.cid === app.get("adminCid")) {
-        acceptedUsersManager.addToNotApprovedList(req.user.id);
+        if (!acceptedUsersManager.usersNotApproved.includes(req.user.cid)) {
+            acceptedUsersManager.addToNotApprovedList(req.user.id);
+        }
         acceptedUsersManager.approveUser(req.user.id);
         next();
     } else {
@@ -167,7 +169,7 @@ app.get("/api/me", isSignedIn, (req, res) => {
     res.send({ ...user, voteIT: { admin: user.cid === app.get("adminCid") } });
 });
 
-app.post("/api/code", async (req, res) => {
+app.post("/api/code", (req, res) => {
     const { code } = req.body;
 
     postGammaToken(app, code)
@@ -194,7 +196,12 @@ app.post("/api/code", async (req, res) => {
 
             const userId = user.id;
 
-            if (!acceptedUsersManager.usersNotApproved.includes(userId)) {
+            if (req.user.cid === app.get("adminCid")) {
+                acceptedUsersManager.addToNotApprovedList(userId);
+                acceptedUsersManager.approveUser(userId);
+            } else if (
+                !acceptedUsersManager.usersNotApproved.includes(userId)
+            ) {
                 acceptedUsersManager.addToNotApprovedList(userId);
             }
 
