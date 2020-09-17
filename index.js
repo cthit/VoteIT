@@ -185,6 +185,7 @@ app.post("/api/code", async (req, res) => {
             }
 
             res.cookie(AUTH_COOKIE_NAME, access_token, {
+                path: "/",
                 expires: new Date(Date.now() + 24 * 3600000), //24h
                 httpOnly: true,
                 secure: production,
